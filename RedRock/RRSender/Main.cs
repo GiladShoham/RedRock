@@ -30,12 +30,13 @@ namespace RRReciver
         public const int NUM_OF_SEQUENCE_DIGIT = 8;
         public const int QR_HIGHET             = 144;
         public const int QR_WIDTH              = 144;
-        private string OUTPUT_FOLDER_BASE = @"D:\Tomer\Studies\Dropbox\RedRock\QRSample\New\";
+        
         
         // Data Member
         private string OUTPUT_FOLDER_BMPS;
         private string OUTPUT_FOLDER_TXT;
         private string OUTPUT_FOLDER_GIF;
+        private string OUTPUT_FOLDER_BASE = @"D:\Tomer\Studies\Dropbox\RedRock\QRSample\New\";
         private string m_strCurrFileLocation = string.Empty;
         private string m_strFileName         = string.Empty;
         private int    m_nCurrTestNum        = 0;
@@ -77,8 +78,21 @@ namespace RRReciver
 
         private void btnCreateCode_Click(object sender, EventArgs e)
         {
+            OUTPUT_FOLDER_BASE = Path.GetTempPath();
+            //Util.StartCapturing();
+            this.FileToQRCode(this.txtFilePath.Text);
+        }
+
+
+        /// <summary>
+        /// The method get a file, comprass it, change it to binary and decode it to qrcode image
+        /// </summary>
+        /// <param name="OriginalFile"></param>
+        /// <returns></returns>
+        public string FileToQRCode(string OriginalFile)
+        {
             // Set the curr file details to the data members
-            m_strCurrFileLocation = this.txtFilePath.Text;
+            m_strCurrFileLocation = OriginalFile;
             m_strFileName = Path.GetFileName(m_strCurrFileLocation);
 
             // Create Folders
@@ -96,9 +110,9 @@ namespace RRReciver
             // Creaate QR code of each frame
             QRCodeWriter qcCode = new QRCodeWriter();
             string strLastStringAddon = string.Empty;
-            for (int nCurrFrameNumber = 0; nCurrFrameNumber < NumOfFrame; nCurrFrameNumber++ )
+            for (int nCurrFrameNumber = 0; nCurrFrameNumber < NumOfFrame; nCurrFrameNumber++)
             {
-                byte[] btOneFrame = null; 
+                byte[] btOneFrame = null;
 
                 // Check if it is the last string or not
                 if (nCurrFrameNumber != NumOfFrame - 1)
@@ -112,10 +126,10 @@ namespace RRReciver
                     btOneFrame = SubStringArrays<byte>(btFullOrigianlArray, nCurrFrameNumber * BYTES_IN_FRAME);
                     strLastStringAddon = "*" + Path.GetExtension(m_strFileName) + "*";
                 }
-                
+
                 // Add the number (with the 0 if it is only one digit) to the start of the image
                 string strOneFrame = string.Format("{0:00}", nCurrFrameNumber) + strLastStringAddon + " " + Convert.ToBase64String(btOneFrame);
-                int output_size = ((BYTES_IN_FRAME * 4) / 3) + (BYTES_IN_FRAME / 96) -1;
+                int output_size = ((BYTES_IN_FRAME * 4) / 3) + (BYTES_IN_FRAME / 96) - 1;
 
                 // Encode the sting to QR code
                 strOneFrame = strOneFrame.PadRight(output_size, ' ');
@@ -125,9 +139,12 @@ namespace RRReciver
                 // Add text file for debug
                 File.WriteAllText(OUTPUT_FOLDER_TXT + nCurrFrameNumber + ".txt", strOneFrame);
 
-                // Create animited gif from bitmap
-                this.CreateAnimitedGif();
             }
+
+            // Create animited gif from bitmap
+            string strGIFFileName = this.CreateAnimitedGif();
+
+            return (strGIFFileName);
         }
 
         private string Comprass(string tarPath)
@@ -139,7 +156,7 @@ namespace RRReciver
             return (strZipPath);
         }
 
-        private void CreateAnimitedGif()
+        private string CreateAnimitedGif()
         {
             /* create Gif */
             // you should replace filepath
@@ -156,6 +173,8 @@ namespace RRReciver
                 ege.AddFrame(Image.FromFile(imageFilePaths[i]));
             }
             ege.Finish();
+
+            return (outputFilePath);
         }
 
 
