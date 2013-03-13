@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "zxing", "zxing\zxing.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crypto", "Crypto\Crypto.csproj", "{9FF26944-7243-4B56-A1E4-86F29914BF93}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IEC16022Sharp", "IEC16022Sharp\IEC16022Sharp.csproj", "{369DA257-17E1-4D9A-BCDA-0CE726C35B36}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,6 +74,16 @@ Global
 		{9FF26944-7243-4B56-A1E4-86F29914BF93}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{9FF26944-7243-4B56-A1E4-86F29914BF93}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{9FF26944-7243-4B56-A1E4-86F29914BF93}.Release|x86.ActiveCfg = Release|Any CPU
+		{369DA257-17E1-4D9A-BCDA-0CE726C35B36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{369DA257-17E1-4D9A-BCDA-0CE726C35B36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{369DA257-17E1-4D9A-BCDA-0CE726C35B36}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{369DA257-17E1-4D9A-BCDA-0CE726C35B36}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{369DA257-17E1-4D9A-BCDA-0CE726C35B36}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{369DA257-17E1-4D9A-BCDA-0CE726C35B36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{369DA257-17E1-4D9A-BCDA-0CE726C35B36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{369DA257-17E1-4D9A-BCDA-0CE726C35B36}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{369DA257-17E1-4D9A-BCDA-0CE726C35B36}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{369DA257-17E1-4D9A-BCDA-0CE726C35B36}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
