@@ -2,90 +2,116 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using Crypto;
 
 namespace RedRock
 {
-    class User : INotifyPropertyChanged
+    [Serializable()]
+    public class User : INotifyPropertyChanged, ISerializable, IEquatable<User>
     {
+        
+
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private int _myId;
+
+        private int _myID;
+
         public int MyID
         {
-            get { return _myId; }
+            get { return _myID; }
+            set
+            {
+                _myID = value;
+                this.NotifyPropertyChanged("MyID");
+            }
         }
 
-        public void SetMyID(int value)
-        {
-            _myId = value;
-            this.NotifyPropertyChanged("ID");
-        }
 
-        private int _myPhone;
-        public int MyPhone
+        private string _myPhone;
+
+        public string MyPhone
         {
             get { return _myPhone; }
+            set
+            {
+                _myPhone = value;
+                this.NotifyPropertyChanged("MyPhone");
+            }
         }
 
-        public void SetMyPhone(int value)
-        {
-            _myPhone = value;
-            this.NotifyPropertyChanged("Phone");
-        }
 
         private string _myName;
+
         public string MyName
         {
             get { return _myName; }
+            set
+            {
+                _myName = value;
+                this.NotifyPropertyChanged("MyName");
+            }
         }
 
-        public void SetMyName(string value)
-        {
-            _myName = value;
-            this.NotifyPropertyChanged("Name");
-        }
 
         private string _myMail;
+
         public string MyMail
         {
             get { return _myMail; }
+            set
+            {
+                _myMail = value;
+                this.NotifyPropertyChanged("MyMail");
+            }
         }
 
-        public void SetMyMail(string value)
-        {
-            _myMail = value;
-            this.NotifyPropertyChanged("Mail");
-        }
 
         private string _myKey;
+
         public string MyKey
         {
             get { return _myKey; }
+            set
+            {
+                _myKey = value;
+                this.NotifyPropertyChanged("MyKey");
+            }
         }
 
-        public void SetMyKey(string value)
-        {
-            _myKey = value;
-            this.NotifyPropertyChanged("Key");
-        }
-
-       
-       
-       
 
         public User()
         {
         }
 
-        public User(int myID, String myName, int myPhone, string myMail)
+        public User(int myID, String myName, string myPhone, string myMail)
         {
-            this.SetMyID(myID);
-            this.SetMyPhone(myPhone);
-            this.SetMyMail(myMail);
-            this.SetMyName(myName);
-            this.SetMyKey(EncDec.CreateKey(8));
+            MyID = (myID);
+            MyPhone = (myPhone);
+            MyMail = (myMail);
+            MyName = (myName);
+            MyKey = (EncDec.CreateKey(8));
+        }
+
+        public User(int myID, String myName, string myPhone, string myMail, string myKey)
+        {
+            MyID = (myID);
+            MyPhone = (myPhone);
+            MyMail = (myMail);
+            MyName = (myName);
+            MyKey = myKey;
+        }
+
+        public User(SerializationInfo info, StreamingContext ctxt)
+        {
+            MyID = (int) info.GetValue("Id", typeof(int));
+            MyPhone = (string) info.GetValue("Phone",typeof(string));
+            MyMail =(string) info.GetValue("Mail", typeof(string));
+            MyName = (string)info.GetValue("Name", typeof(string));
+            MyKey = (string)info.GetValue("Key", typeof(string));
+
+            
         }
 
         private void NotifyPropertyChanged(string name)
@@ -94,6 +120,24 @@ namespace RedRock
                 PropertyChanged(this, new PropertyChangedEventArgs(name));
         }
 
-    }
+        public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
+        {
+            info.AddValue("Id", this.MyID);
+            info.AddValue("Name", this.MyName);
+            info.AddValue("Phone", this.MyPhone);
+            info.AddValue("Mail", this.MyMail);
+            info.AddValue("Key", this.MyKey);
+        }
 
+        public bool Equals(User other)
+        {
+            // whatever your custom equality logic is
+            return other.MyID == MyID &&
+                   other.MyName == MyName &&
+                   other.MyPhone == MyPhone &&
+                   other.MyMail == MyMail &&
+                   other.MyKey == MyKey;
+
+        }
+    }
 }
