@@ -23,8 +23,8 @@ namespace RRReciver
         #region Data Members
 
         // Const Members
-        public const int BYTES_IN_FRAME        = 624;
-        public const int NUM_OF_SEQUENCE_DIGIT = 3;
+        public const int BYTES_IN_FRAME        = 1256;
+        public const int NUM_OF_SEQUENCE_DIGIT = 8;
         public const int QR_HIGHET             = 144;
         public const int QR_WIDTH              = 144;
         private string OUTPUT_FOLDER_BASE = @"D:\Tomer\Studies\Dropbox\RedRock\QRSample\New\";
@@ -81,60 +81,66 @@ namespace RRReciver
             // Create Folders
             CreateFolders();
 
+            // TODO: Restore
             //string strZipFile = this.Comprass(m_strCurrFileLocation);
             string strZipFile = m_strCurrFileLocation;
-            byte[] btArray = File.ReadAllBytes(strZipFile);
+            byte[] btFullOrigianlArray = File.ReadAllBytes(strZipFile);
 
-            //String strFullBitmap = System.Text.Encoding.UTF8.GetString(btArray);
-
-            int NumOfFrame = btArray.Length / (BYTES_IN_FRAME + NUM_OF_SEQUENCE_DIGIT);
-
+            // Create the bitmap array)
+            Decimal dcNumOfFrame = Decimal.Ceiling(Decimal.Parse(btFullOrigianlArray.Length.ToString()) / Decimal.Parse((BYTES_IN_FRAME + NUM_OF_SEQUENCE_DIGIT).ToString()));
+            int NumOfFrame = int.Parse(dcNumOfFrame.ToString());
             Bitmap[] arrbpmOutput = new Bitmap[NumOfFrame];
 
-            QRCodeWriter qcCode = new QRCodeWriter();
+            // TODO: delete
+            //QRCodeWriter qcCode = new QRCodeWriter();
             string strLastStringAddon = string.Empty;
             for (int nCurrFrameNumber = 0; nCurrFrameNumber < NumOfFrame; nCurrFrameNumber++ )
             {
-                // TODO: Restore this
-                /*
-                string strOneFrame;
+                byte[] btOneFrame = null; 
 
                 // Check if it is the last string or not
                 if (nCurrFrameNumber != NumOfFrame - 1)
                 {
                     // If it is not the last string - then it cut the string from the right point in the right size
-                    strOneFrame = strFullBitmap.Substring(nCurrFrameNumber * BYTES_IN_FRAME, BYTES_IN_FRAME);
+                    btOneFrame = SubStringArrays<byte>(btFullOrigianlArray, nCurrFrameNumber * BYTES_IN_FRAME, BYTES_IN_FRAME);
+                    strLastStringAddon = "*" + "---" + "* ";
                 }
                 else
                 {
                     // If it is the last string - cut from the right point till the end
-                    strOneFrame = strFullBitmap.Substring(nCurrFrameNumber * BYTES_IN_FRAME);
-                    strLastStringAddon = "*" + Path.GetExtension(m_strFileName) + "*";
+                    btOneFrame = SubStringArrays<byte>(btFullOrigianlArray, nCurrFrameNumber * BYTES_IN_FRAME);
+                    //ArraySegment<byte> a = new ArraySegment<byte>(btFullOrigianlArray, 4, 16);
+                    
+                    //btOneFrame = new ArraySegment<byte>(btFullOrigianlArray, 0, 4).Array;
+
+                    strLastStringAddon = "*" + Path.GetExtension(m_strFileName) + "* ";
                 }
                  
-
+                
                 // Add the number (with the 0 if it is only one digit) to the start of the image
-                strOneFrame = string.Format("{0:00}", nCurrFrameNumber) + strLastStringAddon + " " + strOneFrame;
-                */
+                string strOneFrame = string.Format("{0:00}", nCurrFrameNumber) + strLastStringAddon;
+                byte[] btStartAddOn = System.Text.Encoding.ASCII.GetBytes(strOneFrame);
 
+                
                 // Encode the string to QRCode
                 //ByteMatrix btMatrix = qcCode.encode(strOneFrame, BarcodeFormat.DATAMATRIX, QR_WIDTH, QR_HIGHET);
-                byte[] btBytesCurrFrame = new byte[BYTES_IN_FRAME];
-                for (int i = 0; i < BYTES_IN_FRAME; i++)
-			    {
-                    btBytesCurrFrame[i] = btArray[i];
-			    }
+                //byte[] btBytesCurrFrame = new byte[BYTES_IN_FRAME];
+                //for (int i = 0; i < BYTES_IN_FRAME.Length; i++)
+                //{
+                //    btBytesCurrFrame[i] = btArray[i];
+                //}
                 
-                
+                // Add the start of each frame
+                byte[] btFullFrame = ConcatArrays(btStartAddOn, btOneFrame);
 
-                DataMatrix dm = new DataMatrix(btBytesCurrFrame, QR_WIDTH, QR_HIGHET, EncodingType.Binary);
+                DataMatrix dm = new DataMatrix(btFullFrame, QR_WIDTH, QR_HIGHET, EncodingType.Binary);
                 dm.Image.Save(OUTPUT_FOLDER_BMPS + nCurrFrameNumber + ".bmp", ImageFormat.Bmp);
 
-                
-                
                 //arrbpmOutput[nCurrFrameNumber] = btMatrix.ToBitmap();
             //    File.CreateText(OUTPUT_FOLDER_BMPS + nCurrFrameNumber + ".txt");
-                //File.WriteAllText(OUTPUT_FOLDER_TXT + nCurrFrameNumber + ".txt", strOneFrame);
+
+                File.WriteAllText(OUTPUT_FOLDER_TXT + nCurrFrameNumber + ".txt", System.Text.Encoding.ASCII.GetString(btFullFrame));
+                File.WriteAllBytes(OUTPUT_FOLDER_TXT + "BYTES " + nCurrFrameNumber + ".txt", btFullFrame);
 
                 //arrbpmOutput[nCurrFrameNumber].Save(OUTPUT_FOLDER_BMPS + nCurrFrameNumber + ".bmp");
 
@@ -166,6 +172,37 @@ namespace RRReciver
                 ege.AddFrame(Image.FromFile(imageFilePaths[i]));
             }
             ege.Finish();
+        }
+
+
+        public static T[] ConcatArrays<T>(params T[][] list)
+        {
+            var result = new T[list.Sum(a => a.Length)];
+            int offset = 0;
+            for (int x = 0; x < list.Length; x++)
+            {
+                list[x].CopyTo(result, offset);
+                offset += list[x].Length;
+            }
+            return result;
+        }
+
+        public static T[] SubStringArrays<T>(T[] list, int offset)
+        {
+            int length = list.Length - offset;
+            return SubStringArrays<T>(list, offset, length);
+        }
+
+        public static T[] SubStringArrays<T>(T[] list, int offset, int length)
+        {
+            var result = new T[length];
+
+            for (int x = offset, i=0; x < offset + length; x++, i++)
+            {
+                result[i] = list[x];
+            }
+
+            return result;
         }
 
         #endregion
