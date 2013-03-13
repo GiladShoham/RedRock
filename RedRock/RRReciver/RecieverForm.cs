@@ -15,6 +15,7 @@ using System.Collections;
 using System.Threading;
 using com.google.zxing.datamatrix.detector;
 using Main;
+using Gif.Components;
 
 namespace RedSender
 {
@@ -153,16 +154,14 @@ namespace RedSender
                 System.Buffer.BlockCopy(array, 0, rv, offset, array.Length);
                 offset += array.Length;
             }
-            
-            //Components.Util
 
-            using (FileStream fs = File.Create(@"C:\Users\Nitzan\Desktop\RedRock\Result\Result" + sFileType))
-            {
-                foreach (Byte b in rv)
-                {
-                    fs.WriteByte(b);
-                }
-            }
+            
+            string sTempFileName = Path.GetTempPath() + @"\tmp.txt";
+            string SOutFile =  @"C:\Users\Nitzan\Desktop\RedRock\Result\" + sFileType;
+
+            File.WriteAllBytes(sTempFileName, rv);
+
+            Gif.Components.Util.DecompressFileLZMA(sTempFileName, SOutFile);
 
             MessageBox.Show("saved seccessfully");
         }
