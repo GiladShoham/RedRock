@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedRock", "RedRock\RedRock.csproj", "{08E41549-4759-42E0-911F-6B319AED6F28}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RRReciver", "RedSender\RRReciver.csproj", "{831DFB77-1080-4D5A-9CAD-7E794C3DBB98}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RRReciver", "RRReciver\RRReciver.csproj", "{831DFB77-1080-4D5A-9CAD-7E794C3DBB98}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RRSender", "RRReciver\RRSender.csproj", "{C58D7F80-BFE8-4142-B603-4879AF665F59}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RRSender", "RRSender\RRSender.csproj", "{C58D7F80-BFE8-4142-B603-4879AF665F59}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "zxing", "zxing\zxing.csproj", "{6431CF13-7A7B-4602-B96A-47CDA6F0B008}"
 EndProject

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace RedSender.Properties
+namespace RRReciver.Properties
 {
 
 
