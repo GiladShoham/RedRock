@@ -1,55 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
-using System.IO;
-using com.google.zxing;
-using com.google.zxing.qrcode.decoder;
-using com.google.zxing.common;
-using com.google.zxing.qrcode;
 using System.Collections;
-using System.Threading;
-using com.google.zxing.datamatrix.detector;
-using Main;
+using System.IO;
+using System.Drawing;
+using com.google.zxing.qrcode;
+using com.google.zxing;
+using com.google.zxing.common;
 
 namespace RedSender
 {
-    public partial class RedRock : Form
+    class FileProcessor
     {
-        private Boolean stop_executing = false;
-        private FileProcessor mDoAction; 
+        public Boolean stop_executing = false;
+        public static readonly List<string> ImageExtensions = new List<string> { ".JPG", ".JPE", ".BMP", ".GIF", ".PNG" };
 
-        public RedRock()
-        {
-            InitializeComponent();
-
-            this.mDoAction = new FileProcessor();
-            this.mDoAction.stop_executing = false;
-           }
-
-        private void btnStartRecieving_Click(object sender, EventArgs e)
-        { /*
-            Thread backgroundThread =
-                new Thread(new ThreadStart(this.mDoAction.ProcessFiles));
-            backgroundThread.Name = "BackgroundThread";
-            backgroundThread.IsBackground = true;
-
-            backgroundThread.Start();
-
-            MessageBox.Show("מבוצעת קליטה");*/
-            this.ProcessFiles();
-        }
-
-        public static void EndProcessAnnounce()
-        {
-            MessageBox.Show("קליטה בוצעה בהצלחה!");
-        }
-
-        private void ProcessFiles()
+        public void ProcessFiles()
         {
             string sPicPath = @"C:\Users\Nitzan\Desktop\RedRock\Picture";
 
@@ -68,11 +35,11 @@ namespace RedSender
 
                 foreach (string strPic in filePaths)
                 {
-                  /*  if (!this.stop_executing &&
-                        ImageExtensions.Contains(Path.GetExtension(strPic).ToUpperInvariant()))*/
+                    if (!this.stop_executing &&
+                        ImageExtensions.Contains(Path.GetExtension(strPic).ToUpperInvariant()))
                     {
                         // Load the picture
-                       // Bitmap image = (Bitmap)Image.FromFile(strPic);
+                        Bitmap image = (Bitmap)Image.FromFile(strPic);
 
                         /*ImageConverter converter = new ImageConverter();
                         Byte[] DecodedArr = (byte[])converter.ConvertTo(image, typeof(byte[]));
@@ -84,7 +51,7 @@ namespace RedSender
                         string sDecodedPicture = System.Text.Encoding.ASCII.GetString(FileIndex);
                         */
 
-                        string sDecodedPicture = this.QRDecode(strPic, new QRCodeReader());
+                        string sDecodedPicture = this.QRDecode(image, new QRCodeReader());
 
                         // Split the decoded string to the picture and picture index
                         int nSpace = sDecodedPicture.IndexOf(' ');
@@ -115,8 +82,6 @@ namespace RedSender
 
                         if (!htAllPictureParts.ContainsKey(nPicIndex))
                         {
-                            Byte[] bb = Convert.FromBase64String("==");
-
                             //Byte[] btPic = Encoding.ASCII.GetBytes(sPicture);
                             Byte[] btPic = Convert.FromBase64String(sPicture.Trim());
 
@@ -125,6 +90,8 @@ namespace RedSender
 
                             nTotalLenght = nTotalLenght + btPic.Length;
                         }
+
+                        image.Dispose();
                     }
                     // delete the picture when closes
                     //        System.IO.File.Delete(sPicPath);
@@ -137,9 +104,9 @@ namespace RedSender
             else
             {
                 this.stop_executing = false;
+                RedSender.RedRock.EndProcessAnnounce();
             }
         }
-
 
         private void CreateResultFile(Hashtable htPictures, int nTotalLenght, string sFileType)
         {
@@ -153,8 +120,6 @@ namespace RedSender
                 System.Buffer.BlockCopy(array, 0, rv, offset, array.Length);
                 offset += array.Length;
             }
-            
-            Components.Util
 
             using (FileStream fs = File.Create(@"C:\Users\Nitzan\Desktop\RedRock\Result\Result" + sFileType))
             {
@@ -163,64 +128,33 @@ namespace RedSender
                     fs.WriteByte(b);
                 }
             }
-
-            MessageBox.Show("saved seccessfully");
         }
 
-        private string QRDecode(string imagepath, Reader decoder)
+        private string QRDecode(Bitmap image, Reader decoder)
         {
-
-            string sdecodedString = string.Empty;
             /*
-                LuminanceSource source = new RGBLuminanceSource(image, image.Width, image.Height);
-                var rgb = new HybridBinarizer(source);
-                var binBitmap = new BinaryBitmap(rgb);
-                
-                BitMatrix bm = binBitmap.BlackMatrix;*/
+            MemoryStream ms = new MemoryStream();
+            image.Save(ms,System.Drawing.Imaging.ImageFormat.Bmp);
 
+            DataMatrix dmDecoder = new DataMatrix(ms.ToArray(), image.Width, image.Height, EncodingType.Binary);
 
-                ClearImageNetFnc ciNetProc = new ClearImageNetFnc();
-                string s = ciNetProc.ReadQR_Page(imagepath, 1);
-		
+            return dmDecoder.HexPbm;
+             * */
 
 
 
-                 /*   
-                Detector detector = new Detector(bm);
-                DetectorResult result = detector.detect();
+            var rgb = new RGBLuminanceSource(image, image.Width, image.Height);
+            var hybrid = new HybridBinarizer(rgb);
 
-                string retStr = "Found at points ";
-                BitMatrix QRImageData = result.Bits;
-                  */
-/*
-                image m = QRImageData;
-                LuminanceSource source = new RGBLuminanceSource(QRImageData, image.Width, image.Height);
-                var rgb = new HybridBinarizer(source);
-                var binBitmap = new BinaryBitmap(rgb);
+            BinaryBitmap binBitmap = new BinaryBitmap(hybrid);
 
-
-                BinaryBitmap m = new BinaryBitmap(
-
-                sdecodedString = decoder.decode(().Text;*/
-  
-
-
-            
+            string sdecodedString = decoder.decode(binBitmap, null).Text;
             //Byte[] result = decoder.decode(binBitmap, null).;
 
             //return null;
-            int nPerfixEnd = s.IndexOf("RAW BARCODE DATA:");
-            s = s.Remove(0, nPerfixEnd);
 
-            int nLastPerfix = s.IndexOf(":");
-            s = s.Remove(0, nLastPerfix + 3);
-            s = s.Replace("--------------", String.Empty);
-            return s;
+            return sdecodedString;
         }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            this.mDoAction.stop_executing = true;
-        }
+    
     }
 }
