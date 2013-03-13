@@ -18,6 +18,7 @@ using System.Collections;
 using com.google.zxing.multi.qrcode;
 using com.google.zxing.datamatrix.detector;
 using System.Diagnostics;
+using Main;
 
 namespace RRReciver
 {
@@ -62,6 +63,8 @@ namespace RRReciver
             string strTestCounter = (Directory.GetDirectories(OUTPUT_FOLDER_BASE).Length + 1) + @"\";
 
             Directory.CreateDirectory(OUTPUT_FOLDER_BASE + strTestCounter);
+
+            //D:\Tomer\Studies\Dropbox\RedRock\QRFromTablet\Good.jpg
             
             File.Copy(m_strCurrFileLocation, OUTPUT_FOLDER_BASE + strTestCounter + Path.GetFileName(m_strCurrFileLocation));
             m_strCurrFileLocation = OUTPUT_FOLDER_BASE + strTestCounter + Path.GetFileName(m_strCurrFileLocation);
@@ -131,55 +134,20 @@ namespace RRReciver
             }
         }
 
-        //public string Detect(Bitmap bitmap)
-        //{
-        //    try
-        //    {
-        //        com.google.zxing.LuminanceSource source = new RGBLuminanceSource(bitmap, bitmap.Width, bitmap.Height);
-        //        var binarizer = new HybridBinarizer(source);
-        //        var binBitmap = new BinaryBitmap(binarizer);
-
-        //        BitMatrix bm = binBitmap.BlackMatrix;
-        //        Detector detector = new Detector(bm);
-        //        DetectorResult result = detector.detect();
-
-        //        string retStr = "Found at points ";
-        //        foreach (ResultPoint point in result.Points)
-        //        {
-        //            retStr += point.ToString() + ", ";
-        //        }
-
-        //        return retStr;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return "Failed to detect QR code.";
-        //    }
-        //}
-
-
-
-        [DebuggerHidden]
-        string findQrCodeText(com.google.zxing.Reader decoder, Bitmap bitmap)
-        {
-            var rgb = new RGBLuminanceSource(bitmap, bitmap.Width, bitmap.Height);
-            var hybrid = new com.google.zxing.common.HybridBinarizer(rgb);
-            com.google.zxing.BinaryBitmap binBitmap = new com.google.zxing.BinaryBitmap(hybrid);
-            string decodedString = decoder.decode(binBitmap, null).Text;
-            return decodedString;
-        }
-
         private string Comprass(string tarPath)
         {
             string strZipPath = m_strCurrFileLocation;
 
             
             //Bitmap bitmap = (Bitmap)Image.FromFile(@"D:\Tomer\Studies\Dropbox\RedRock\QRSample\New\35\BMP\2.bmp");
-            Bitmap bitmap = (Bitmap)Image.FromFile(@"D:\Tomer\Studies\Dropbox\RedRock\QRSample\New\Test.jpg");
-            
+            Bitmap bitmap = (Bitmap)Image.FromFile(@"D:\Tomer\Studies\Dropbox\RedRock\QRFromTablet\Good.jpg");
+
+            ClearImageNetFnc ciNetProc = new ClearImageNetFnc();
+            string s = ciNetProc.ReadQR_Page(@"D:\Tomer\Studies\Dropbox\RedRock\QRFromTablet\Good.jpg", 1);
+
             //string str = this.Detect(bitmap);
 
-            string str = findQrCodeText(new com.google.zxing.qrcode.QRCodeReader(), bitmap);
+            //string str = findQrCodeText(new com.google.zxing.qrcode.QRCodeReader(), bitmap);
 
             //Hashtable<DecodeHintType, Object> hints = new Hashtable<DecodeHintType, Object>();
 

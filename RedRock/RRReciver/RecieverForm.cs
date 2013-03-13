@@ -12,7 +12,7 @@ using com.google.zxing.qrcode.decoder;
 using com.google.zxing.common;
 using com.google.zxing.qrcode;
 using System.Collections;
-using IEC16022Sharp;
+
 
 namespace RedSender
 {

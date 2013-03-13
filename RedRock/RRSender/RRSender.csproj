@@ -84,6 +84,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ClearImage C# Project\ClearImageNetExampleCS.csproj">
+      <Project>{6EDA2DCC-C9E7-4CC7-A690-FE078E224B89}</Project>
+      <Name>ClearImageNetExampleCS</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Components\Components.csproj">
       <Project>{1C3A03CA-5E55-4CC4-9746-194A4188960A}</Project>
       <Name>Components</Name>
