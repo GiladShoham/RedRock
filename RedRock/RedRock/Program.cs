@@ -20,6 +20,7 @@ namespace RedRock
             Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new Main());
             Application.Run(new MangeUsers());
+            //Application.Run(new Form1());
             
         }
     }

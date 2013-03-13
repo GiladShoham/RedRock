@@ -31,11 +31,6 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MangeUsers));
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.ColID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColPhone = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColMail = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColKey = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.bindingNavigator1 = new System.Windows.Forms.BindingNavigator(this.components);
             this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorCountItem = new System.Windows.Forms.ToolStripLabel();
@@ -50,6 +45,12 @@
             this.bindingNavigatorSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
+            this.btnExit = new System.Windows.Forms.Button();
+            this.ColID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColPhone = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColMail = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColKey = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).BeginInit();
             this.bindingNavigator1.SuspendLayout();
@@ -68,36 +69,10 @@
             this.dataGridView1.Location = new System.Drawing.Point(26, 38);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.dataGridView1.Size = new System.Drawing.Size(524, 150);
+            this.dataGridView1.Size = new System.Drawing.Size(683, 150);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.RowLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_RowLeave);
             this.dataGridView1.UserAddedRow += new System.Windows.Forms.DataGridViewRowEventHandler(this.dataGridView1_UserAddedRow);
-            // 
-            // ColID
-            // 
-            this.ColID.HeaderText = "ת.ז";
-            this.ColID.Name = "ColID";
-            // 
-            // ColName
-            // 
-            this.ColName.HeaderText = "שם";
-            this.ColName.Name = "ColName";
-            // 
-            // ColPhone
-            // 
-            this.ColPhone.HeaderText = "טלפון";
-            this.ColPhone.Name = "ColPhone";
-            // 
-            // ColMail
-            // 
-            this.ColMail.HeaderText = "מייל";
-            this.ColMail.Name = "ColMail";
-            // 
-            // ColKey
-            // 
-            this.ColKey.HeaderText = "מפתח";
-            this.ColKey.Name = "ColKey";
-            this.ColKey.ReadOnly = true;
             // 
             // bindingNavigator1
             // 
@@ -126,7 +101,7 @@
             this.bindingNavigator1.Name = "bindingNavigator1";
             this.bindingNavigator1.PositionItem = this.bindingNavigatorPositionItem;
             this.bindingNavigator1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.bindingNavigator1.Size = new System.Drawing.Size(562, 25);
+            this.bindingNavigator1.Size = new System.Drawing.Size(730, 25);
             this.bindingNavigator1.TabIndex = 1;
             this.bindingNavigator1.Text = "bindingNavigator1";
             // 
@@ -232,12 +207,52 @@
             this.toolStripButton2.Name = "toolStripButton2";
             this.toolStripButton2.Size = new System.Drawing.Size(23, 22);
             this.toolStripButton2.Text = "toolStripButton2";
+            this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
+            // 
+            // btnExit
+            // 
+            this.btnExit.Location = new System.Drawing.Point(119, 392);
+            this.btnExit.Name = "btnExit";
+            this.btnExit.Size = new System.Drawing.Size(75, 23);
+            this.btnExit.TabIndex = 4;
+            this.btnExit.Text = "יציאה";
+            this.btnExit.UseVisualStyleBackColor = true;
+            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
+            // 
+            // ColID
+            // 
+            this.ColID.HeaderText = "ת.ז";
+            this.ColID.Name = "ColID";
+            // 
+            // ColName
+            // 
+            this.ColName.HeaderText = "שם";
+            this.ColName.Name = "ColName";
+            // 
+            // ColPhone
+            // 
+            this.ColPhone.HeaderText = "טלפון";
+            this.ColPhone.Name = "ColPhone";
+            // 
+            // ColMail
+            // 
+            this.ColMail.HeaderText = "מייל";
+            this.ColMail.Name = "ColMail";
+            this.ColMail.Width = 200;
+            // 
+            // ColKey
+            // 
+            this.ColKey.HeaderText = "מפתח";
+            this.ColKey.Name = "ColKey";
+            this.ColKey.ReadOnly = true;
+            this.ColKey.Width = 140;
             // 
             // MangeUsers
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(562, 428);
+            this.ClientSize = new System.Drawing.Size(730, 428);
+            this.Controls.Add(this.btnExit);
             this.Controls.Add(this.bindingNavigator1);
             this.Controls.Add(this.dataGridView1);
             this.Name = "MangeUsers";
@@ -269,6 +284,7 @@
         private System.Windows.Forms.ToolStripSeparator bindingNavigatorSeparator2;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.ToolStripButton toolStripButton2;
+        private System.Windows.Forms.Button btnExit;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColID;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColName;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColPhone;
