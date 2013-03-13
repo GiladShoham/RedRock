@@ -9,6 +9,7 @@ namespace Crypto
 {
     public class EncDec
     {
+        private const String delimiter = " ";
         // Encrypt a byte array into a byte array using a key and an IV 
         public static byte[] Encrypt(byte[] clearData, byte[] Key, byte[] IV)
         {
@@ -380,9 +381,12 @@ namespace Crypto
             //return encoding.GetBytes(str);
             SHA1 mySha1 = new SHA1CryptoServiceProvider();
             byte[] hash = mySha1.ComputeHash(textToSignBytes);
-          
-            byte[] delimiter = encoding.GetBytes(" ");
-            byte[] signedText = ConcatArrays(hash,delimiter, textToSignBytes);
+            
+            //RSA myRsa = new RSACryptoServiceProvider();
+            //myRsa
+
+            byte[] delimiterBytes = encoding.GetBytes(delimiter);
+            byte[] signedText = ConcatArrays(hash, delimiterBytes, textToSignBytes);
             //var signedText = ConcatArrays(hash,delimiter,textToSignBytes);
             //var signedText = ConcatArrays( delimiter, textToSignBytes);
             //byte[] signedText = new byte[textToSignBytes.Length + hash.Length];
@@ -391,6 +395,40 @@ namespace Crypto
             return encoding.GetString(signedText);
             //return signedText;
         }
+
+        public static String Unsign(String textToUnsign, String signature)
+        {
+            Boolean valid = false;
+            String unsigndText = "";
+            System.Text.UTF8Encoding encoding = new System.Text.UTF8Encoding();
+
+            String textWithoutSignature = textToUnsign.Substring(textToUnsign.IndexOf(delimiter));
+
+            SHA1 mySha1 = new SHA1CryptoServiceProvider();
+            byte[] hash = mySha1.ComputeHash(encoding.GetBytes(textWithoutSignature));
+
+            if (signature.CompareTo(encoding.GetString(hash)) == 1)
+            {
+                unsigndText = textWithoutSignature;
+            }
+
+            return unsigndText;
+
+        }
+
+        public static String GetSignature(String textWithSigh)
+        {
+            String sign = textWithSigh.Split(delimiter[0])[0];
+            return sign;
+        }
+
+        public static  String DecryptSign(String signToDecrypt)
+        {
+            //TODO: need to implement
+            return signToDecrypt;
+        }
+
+
 
         public static T[] ConcatArrays<T>(params T[][] list)
         {
