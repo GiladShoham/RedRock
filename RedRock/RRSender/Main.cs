@@ -10,11 +10,14 @@ using com.google.zxing.qrcode.encoder;
 using com.google.zxing.qrcode;
 using com.google.zxing;
 using com.google.zxing.common;
-
-using IEC16022Sharp;
 using System.IO;
 using Gif.Components;
 using System.Drawing.Imaging;
+using SevenZip;
+using System.Collections;
+using com.google.zxing.multi.qrcode;
+using com.google.zxing.datamatrix.detector;
+using System.Diagnostics;
 
 namespace RRReciver
 {
@@ -23,10 +26,10 @@ namespace RRReciver
         #region Data Members
 
         // Const Members
-        public const int BYTES_IN_FRAME        = 1256;
+        public const int BYTES_IN_FRAME        = 300;
         public const int NUM_OF_SEQUENCE_DIGIT = 8;
-        public const int QR_HIGHET             = 144;
-        public const int QR_WIDTH              = 144;
+        public const int QR_HIGHET             = 57;
+        public const int QR_WIDTH              = 57;
         private string OUTPUT_FOLDER_BASE = @"D:\Tomer\Studies\Dropbox\RedRock\QRSample\New\";
         
         // Data Member
@@ -82,17 +85,17 @@ namespace RRReciver
             CreateFolders();
 
             // TODO: Restore
-            //string strZipFile = this.Comprass(m_strCurrFileLocation);
-            string strZipFile = m_strCurrFileLocation;
+            string strZipFile = this.Comprass(m_strCurrFileLocation);
+            strZipFile = m_strCurrFileLocation;
             byte[] btFullOrigianlArray = File.ReadAllBytes(strZipFile);
 
-            // Create the bitmap array)
+            // Create the bitmap array
             Decimal dcNumOfFrame = Decimal.Ceiling(Decimal.Parse(btFullOrigianlArray.Length.ToString()) / Decimal.Parse((BYTES_IN_FRAME + NUM_OF_SEQUENCE_DIGIT).ToString()));
             int NumOfFrame = int.Parse(dcNumOfFrame.ToString());
             Bitmap[] arrbpmOutput = new Bitmap[NumOfFrame];
 
-            // TODO: delete
-            //QRCodeWriter qcCode = new QRCodeWriter();
+            // Creaate QR code of each frame
+            QRCodeWriter qcCode = new QRCodeWriter();
             string strLastStringAddon = string.Empty;
             for (int nCurrFrameNumber = 0; nCurrFrameNumber < NumOfFrame; nCurrFrameNumber++ )
             {
@@ -103,55 +106,116 @@ namespace RRReciver
                 {
                     // If it is not the last string - then it cut the string from the right point in the right size
                     btOneFrame = SubStringArrays<byte>(btFullOrigianlArray, nCurrFrameNumber * BYTES_IN_FRAME, BYTES_IN_FRAME);
-                    strLastStringAddon = "*" + "---" + "* ";
                 }
                 else
                 {
                     // If it is the last string - cut from the right point till the end
                     btOneFrame = SubStringArrays<byte>(btFullOrigianlArray, nCurrFrameNumber * BYTES_IN_FRAME);
-                    //ArraySegment<byte> a = new ArraySegment<byte>(btFullOrigianlArray, 4, 16);
-                    
-                    //btOneFrame = new ArraySegment<byte>(btFullOrigianlArray, 0, 4).Array;
-
-                    strLastStringAddon = "*" + Path.GetExtension(m_strFileName) + "* ";
+                    strLastStringAddon = "*" + Path.GetExtension(m_strFileName) + "*";
                 }
-                 
                 
                 // Add the number (with the 0 if it is only one digit) to the start of the image
-                string strOneFrame = string.Format("{0:00}", nCurrFrameNumber) + strLastStringAddon;
-                byte[] btStartAddOn = System.Text.Encoding.ASCII.GetBytes(strOneFrame);
+                string strOneFrame = string.Format("{0:00}", nCurrFrameNumber) + strLastStringAddon + " " + Convert.ToBase64String(btOneFrame);
+                int output_size = ((BYTES_IN_FRAME * 4) / 3) + (BYTES_IN_FRAME / 96) -1;
 
-                
-                // Encode the string to QRCode
-                //ByteMatrix btMatrix = qcCode.encode(strOneFrame, BarcodeFormat.DATAMATRIX, QR_WIDTH, QR_HIGHET);
-                //byte[] btBytesCurrFrame = new byte[BYTES_IN_FRAME];
-                //for (int i = 0; i < BYTES_IN_FRAME.Length; i++)
-                //{
-                //    btBytesCurrFrame[i] = btArray[i];
-                //}
-                
-                // Add the start of each frame
-                byte[] btFullFrame = ConcatArrays(btStartAddOn, btOneFrame);
+                // Encode the sting to QR code
+                strOneFrame = strOneFrame.PadRight(output_size, ' ');
+                ByteMatrix btMatrix = qcCode.encode(strOneFrame, BarcodeFormat.QR_CODE, QR_WIDTH, QR_HIGHET);
+                btMatrix.ToBitmap().Save(OUTPUT_FOLDER_BMPS + nCurrFrameNumber + ".bmp", ImageFormat.Bmp);
 
-                DataMatrix dm = new DataMatrix(btFullFrame, QR_WIDTH, QR_HIGHET, EncodingType.Binary);
-                dm.Image.Save(OUTPUT_FOLDER_BMPS + nCurrFrameNumber + ".bmp", ImageFormat.Bmp);
+                // Add text file for debug
+                File.WriteAllText(OUTPUT_FOLDER_TXT + nCurrFrameNumber + ".txt", strOneFrame);
 
-                //arrbpmOutput[nCurrFrameNumber] = btMatrix.ToBitmap();
-            //    File.CreateText(OUTPUT_FOLDER_BMPS + nCurrFrameNumber + ".txt");
-
-                File.WriteAllText(OUTPUT_FOLDER_TXT + nCurrFrameNumber + ".txt", System.Text.Encoding.ASCII.GetString(btFullFrame));
-                File.WriteAllBytes(OUTPUT_FOLDER_TXT + "BYTES " + nCurrFrameNumber + ".txt", btFullFrame);
-
-                //arrbpmOutput[nCurrFrameNumber].Save(OUTPUT_FOLDER_BMPS + nCurrFrameNumber + ".bmp");
-
+                // Create animited gif from bitmap
                 this.CreateAnimitedGif();
             }
         }
 
-        private string Comprass(string startPath)
-        {
-            string strZipPath = GZipDecoder.Compress(new FileInfo(startPath));
+        //public string Detect(Bitmap bitmap)
+        //{
+        //    try
+        //    {
+        //        com.google.zxing.LuminanceSource source = new RGBLuminanceSource(bitmap, bitmap.Width, bitmap.Height);
+        //        var binarizer = new HybridBinarizer(source);
+        //        var binBitmap = new BinaryBitmap(binarizer);
 
+        //        BitMatrix bm = binBitmap.BlackMatrix;
+        //        Detector detector = new Detector(bm);
+        //        DetectorResult result = detector.detect();
+
+        //        string retStr = "Found at points ";
+        //        foreach (ResultPoint point in result.Points)
+        //        {
+        //            retStr += point.ToString() + ", ";
+        //        }
+
+        //        return retStr;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return "Failed to detect QR code.";
+        //    }
+        //}
+
+
+
+        [DebuggerHidden]
+        string findQrCodeText(com.google.zxing.Reader decoder, Bitmap bitmap)
+        {
+            var rgb = new RGBLuminanceSource(bitmap, bitmap.Width, bitmap.Height);
+            var hybrid = new com.google.zxing.common.HybridBinarizer(rgb);
+            com.google.zxing.BinaryBitmap binBitmap = new com.google.zxing.BinaryBitmap(hybrid);
+            string decodedString = decoder.decode(binBitmap, null).Text;
+            return decodedString;
+        }
+
+        private string Comprass(string tarPath)
+        {
+            string strZipPath = m_strCurrFileLocation;
+
+            
+            //Bitmap bitmap = (Bitmap)Image.FromFile(@"D:\Tomer\Studies\Dropbox\RedRock\QRSample\New\35\BMP\2.bmp");
+            Bitmap bitmap = (Bitmap)Image.FromFile(@"D:\Tomer\Studies\Dropbox\RedRock\QRSample\New\Test.jpg");
+            
+            //string str = this.Detect(bitmap);
+
+            string str = findQrCodeText(new com.google.zxing.qrcode.QRCodeReader(), bitmap);
+
+            //Hashtable<DecodeHintType, Object> hints = new Hashtable<DecodeHintType, Object>();
+
+            //hints.Add(DecodeHintType.TRY_HARDER, true);
+
+            ////hints.Add(EncodeHintType.ERROR_CORRECTION, 33);
+
+            //LuminanceSource ls = new RGBLuminanceSource(bitmap, bitmap.Width,
+            //bitmap.Height);
+            //QRCodeMultiReader multiReader = new QRCodeMultiReader();
+            //Result[] rs = multiReader.decodeMultiple(new BinaryBitmap(new
+            //HybridBinarizer(ls)), hints);
+            //return rs[0].Text; // there is only one QRCode in the page
+
+            ////string sDecodedPicture = this.QRDecode(image, new QRCodeReader());
+
+
+            //BitMatrix btm = new BitMatrix(144,144);
+            
+            //com.google.zxing.qrcode.detector.Detector dt = new com.google.zxing.qrcode.detector.Detector();
+
+            
+
+            //SevenZipCompressor.SetLibraryPath(@"D:\Tomer\RedRock\RedRock\7zip\7z.dll");
+            //SevenZipCompressor szCompressor = new SevenZipCompressor();
+            
+            
+
+            /*
+            FileStream fsOutStream = new FileStream(OUTPUT_FOLDER_BASE + "test.7zip" , FileMode.CreateNew, FileAccess.Write);
+            fsOutStream.
+            FileStream fsInStream = new FileStream(m_strCurrFileLocation, FileMode.Open, FileAccess.Read);
+
+            int length = 0;
+            SevenZip.SevenZipCompressor.CompressStream(fsOutStream, fsInStream, length, null);
+ */
             return (strZipPath);
         }
 
