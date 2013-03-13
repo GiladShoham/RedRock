@@ -15,6 +15,7 @@ using System.Collections;
 using IEC16022Sharp;
 using System.Threading;
 using com.google.zxing.datamatrix.detector;
+using Main;
 
 namespace RedSender
 {
@@ -72,7 +73,7 @@ namespace RedSender
                         ImageExtensions.Contains(Path.GetExtension(strPic).ToUpperInvariant()))*/
                     {
                         // Load the picture
-                        Bitmap image = (Bitmap)Image.FromFile(strPic);
+                       // Bitmap image = (Bitmap)Image.FromFile(strPic);
 
                         /*ImageConverter converter = new ImageConverter();
                         Byte[] DecodedArr = (byte[])converter.ConvertTo(image, typeof(byte[]));
@@ -84,7 +85,7 @@ namespace RedSender
                         string sDecodedPicture = System.Text.Encoding.ASCII.GetString(FileIndex);
                         */
 
-                        string sDecodedPicture = this.QRDecode(image, new QRCodeReader());
+                        string sDecodedPicture = this.QRDecode(strPic, new QRCodeReader());
 
                         // Split the decoded string to the picture and picture index
                         int nSpace = sDecodedPicture.IndexOf(' ');
@@ -115,6 +116,8 @@ namespace RedSender
 
                         if (!htAllPictureParts.ContainsKey(nPicIndex))
                         {
+                            Byte[] bb = Convert.FromBase64String("==");
+
                             //Byte[] btPic = Encoding.ASCII.GetBytes(sPicture);
                             Byte[] btPic = Convert.FromBase64String(sPicture.Trim());
 
@@ -123,8 +126,6 @@ namespace RedSender
 
                             nTotalLenght = nTotalLenght + btPic.Length;
                         }
-
-                        image.Dispose();
                     }
                     // delete the picture when closes
                     //        System.IO.File.Delete(sPicPath);
@@ -165,18 +166,20 @@ namespace RedSender
             MessageBox.Show("saved seccessfully");
         }
 
-        private string QRDecode(Bitmap image, Reader decoder)
+        private string QRDecode(string imagepath, Reader decoder)
         {
 
             string sdecodedString = string.Empty;
-
+            /*
                 LuminanceSource source = new RGBLuminanceSource(image, image.Width, image.Height);
                 var rgb = new HybridBinarizer(source);
                 var binBitmap = new BinaryBitmap(rgb);
                 
-                BitMatrix bm = binBitmap.BlackMatrix;
+                BitMatrix bm = binBitmap.BlackMatrix;*/
 
-				
+
+                ClearImageNetFnc ciNetProc = new ClearImageNetFnc();
+                string s = ciNetProc.ReadQR_Page(imagepath, 1);
 		
 
 
@@ -205,8 +208,13 @@ namespace RedSender
             //Byte[] result = decoder.decode(binBitmap, null).;
 
             //return null;
+            int nPerfixEnd = s.IndexOf("RAW BARCODE DATA:");
+            s = s.Remove(0, nPerfixEnd);
 
-            return sdecodedString;
+            int nLastPerfix = s.IndexOf(":");
+            s = s.Remove(0, nLastPerfix + 3);
+            s = s.Replace("--------------", String.Empty);
+            return s;
         }
 
         private void btnCancel_Click(object sender, EventArgs e)

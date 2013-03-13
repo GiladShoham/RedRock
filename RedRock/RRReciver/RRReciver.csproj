@@ -78,6 +78,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ClearImage C# Project\ClearImageNetExampleCS.csproj">
+      <Project>{6EDA2DCC-C9E7-4CC7-A690-FE078E224B89}</Project>
+      <Name>ClearImageNetExampleCS</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Crypto\Crypto.csproj">
       <Project>{9FF26944-7243-4B56-A1E4-86F29914BF93}</Project>
       <Name>Crypto</Name>
