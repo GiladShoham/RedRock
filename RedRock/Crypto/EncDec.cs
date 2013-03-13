@@ -377,23 +377,19 @@ namespace Crypto
         {
             System.Text.UTF8Encoding encoding = new System.Text.UTF8Encoding();
             Byte[] textToSignBytes = encoding.GetBytes(textToSign);
-            //System.Text.UTF8Encoding encoding = new System.Text.UTF8Encoding();
-            //return encoding.GetBytes(str);
+            
             SHA1 mySha1 = new SHA1CryptoServiceProvider();
             byte[] hash = mySha1.ComputeHash(textToSignBytes);
             
-            //RSA myRsa = new RSACryptoServiceProvider();
-            //myRsa
+            
 
             byte[] delimiterBytes = encoding.GetBytes(delimiter);
+
+            //TODO: need to encrypt the hash
             byte[] signedText = ConcatArrays(hash, delimiterBytes, textToSignBytes);
-            //var signedText = ConcatArrays(hash,delimiter,textToSignBytes);
-            //var signedText = ConcatArrays( delimiter, textToSignBytes);
-            //byte[] signedText = new byte[textToSignBytes.Length + hash.Length];
-            //signedText.CopyTo(signedText, 0);
-            //signedText.CopyTo(hash, signedText.Length);
+           
             return encoding.GetString(signedText);
-            //return signedText;
+            
         }
 
         public static String Unsign(String textToUnsign, String signature)
@@ -402,12 +398,12 @@ namespace Crypto
             String unsigndText = "";
             System.Text.UTF8Encoding encoding = new System.Text.UTF8Encoding();
 
-            String textWithoutSignature = textToUnsign.Substring(textToUnsign.IndexOf(delimiter));
+            String textWithoutSignature = textToUnsign.Substring(textToUnsign.IndexOf(delimiter) + 1);
 
             SHA1 mySha1 = new SHA1CryptoServiceProvider();
             byte[] hash = mySha1.ComputeHash(encoding.GetBytes(textWithoutSignature));
 
-            if (signature.CompareTo(encoding.GetString(hash)) == 1)
+            if (signature.CompareTo(encoding.GetString(hash)) == 0)
             {
                 unsigndText = textWithoutSignature;
             }
