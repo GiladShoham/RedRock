@@ -63,7 +63,7 @@ namespace RedSender
                     {
                         Byte[] btPic = Encoding.ASCII.GetBytes(sPicture);
 
-                        File.WriteAllBytes(@"C:\Users\Nitzan\Desktop\RedRock\Result\Result22.GIF", btPic);
+                        File.WriteAllBytes(@"C:\Users\Nitzan\Desktop\RedRock\Result\.GIF", btPic);
 
                         htAllPictureParts.Add(nPicIndex, btPic);
                         ++nAddedPictures;
