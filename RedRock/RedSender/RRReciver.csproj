@@ -81,6 +81,10 @@
       <Project>{9FF26944-7243-4B56-A1E4-86F29914BF93}</Project>
       <Name>Crypto</Name>
     </ProjectReference>
+    <ProjectReference Include="..\IEC16022Sharp\IEC16022Sharp.csproj">
+      <Project>{369DA257-17E1-4D9A-BCDA-0CE726C35B36}</Project>
+      <Name>IEC16022Sharp</Name>
+    </ProjectReference>
     <ProjectReference Include="..\zxing\zxing.csproj">
       <Project>{6431CF13-7A7B-4602-B96A-47CDA6F0B008}</Project>
       <Name>zxing</Name>
