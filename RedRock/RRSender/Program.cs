@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace RedSender
+namespace RRReciver
 {
     static class Program
     {
@@ -15,7 +15,7 @@ namespace RedSender
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new RedRock());
+            Application.Run(new Main());
         }
     }
 }
