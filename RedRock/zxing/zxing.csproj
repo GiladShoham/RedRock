@@ -236,6 +236,9 @@
     <Compile Include="WriterException.cs" />
     <Compile Include="oned\Code39Writer.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
