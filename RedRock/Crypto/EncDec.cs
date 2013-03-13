@@ -380,9 +380,10 @@ namespace Crypto
             //return encoding.GetBytes(str);
             SHA1 mySha1 = new SHA1CryptoServiceProvider();
             byte[] hash = mySha1.ComputeHash(textToSignBytes);
-            byte[] signedText = ConcatArrays(textToSignBytes, hash);
-            byte[] delimiter = encoding.GetBytes("bla");
-            var signedText = ConcatArrays(hash,delimiter,textToSignBytes);
+          
+            byte[] delimiter = encoding.GetBytes(" ");
+            byte[] signedText = ConcatArrays(hash,delimiter, textToSignBytes);
+            //var signedText = ConcatArrays(hash,delimiter,textToSignBytes);
             //var signedText = ConcatArrays( delimiter, textToSignBytes);
             //byte[] signedText = new byte[textToSignBytes.Length + hash.Length];
             //signedText.CopyTo(signedText, 0);

@@ -25,7 +25,7 @@ namespace RedRock
         private void button1_Click(object sender, EventArgs e)
         {
             //Console.WriteLine("djasf");
-            String text = "giladgilad";
+            String text = "gilad";
             String key = "gil";
             //String wrongKey = "afsdafs";
             this.source.Text = text;
