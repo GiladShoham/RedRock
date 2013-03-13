@@ -33,8 +33,11 @@ namespace RedRock
             String encrypted = EncDec.Encrypt(text, key);
             String signed = EncDec.Sign(encrypted);
             this.sigend.Text = signed;
+            
+            String unsigned = EncDec.Unsign(signed, EncDec.GetSignature(signed));
+            this.unsigned.Text = unsigned;
             this.encrypted.Text = encrypted;
-            this.decrypted.Text = EncDec.Decrypt(encrypted, key);
+            this.decrypted.Text = EncDec.Decrypt(unsigned, key);
            // this.decryptedWrong.Text = EncDec.Decrypt(encrypted, wrongKey);
 
         }
