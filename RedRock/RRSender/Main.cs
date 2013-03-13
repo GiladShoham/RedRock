@@ -13,7 +13,6 @@ using com.google.zxing.common;
 using System.IO;
 using Gif.Components;
 using System.Drawing.Imaging;
-using SevenZip;
 using System.Collections;
 using com.google.zxing.multi.qrcode;
 using com.google.zxing.datamatrix.detector;
@@ -27,10 +26,10 @@ namespace RRReciver
         #region Data Members
 
         // Const Members
-        public const int BYTES_IN_FRAME        = 300;
+        public const int BYTES_IN_FRAME        = 800;
         public const int NUM_OF_SEQUENCE_DIGIT = 8;
-        public const int QR_HIGHET             = 57;
-        public const int QR_WIDTH              = 57;
+        public const int QR_HIGHET             = 144;
+        public const int QR_WIDTH              = 144;
         private string OUTPUT_FOLDER_BASE = @"D:\Tomer\Studies\Dropbox\RedRock\QRSample\New\";
         
         // Data Member
@@ -134,56 +133,13 @@ namespace RRReciver
             }
         }
 
-        private string Comprass(string tarPath)
+        private string Comprass(string filePath)
         {
             string strZipPath = m_strCurrFileLocation;
 
-            
-            //Bitmap bitmap = (Bitmap)Image.FromFile(@"D:\Tomer\Studies\Dropbox\RedRock\QRSample\New\35\BMP\2.bmp");
-            Bitmap bitmap = (Bitmap)Image.FromFile(@"D:\Tomer\Studies\Dropbox\RedRock\QRFromTablet\Good.jpg");
+            strZipPath = Path.GetDirectoryName(filePath) + "\\" + Path.GetFileNameWithoutExtension(filePath) + ".z7";
+            Util.CompressFileLZMA(filePath, strZipPath);
 
-            ClearImageNetFnc ciNetProc = new ClearImageNetFnc();
-            string s = ciNetProc.ReadQR_Page(@"D:\Tomer\Studies\Dropbox\RedRock\QRFromTablet\Good.jpg", 1);
-
-            //string str = this.Detect(bitmap);
-
-            //string str = findQrCodeText(new com.google.zxing.qrcode.QRCodeReader(), bitmap);
-
-            //Hashtable<DecodeHintType, Object> hints = new Hashtable<DecodeHintType, Object>();
-
-            //hints.Add(DecodeHintType.TRY_HARDER, true);
-
-            ////hints.Add(EncodeHintType.ERROR_CORRECTION, 33);
-
-            //LuminanceSource ls = new RGBLuminanceSource(bitmap, bitmap.Width,
-            //bitmap.Height);
-            //QRCodeMultiReader multiReader = new QRCodeMultiReader();
-            //Result[] rs = multiReader.decodeMultiple(new BinaryBitmap(new
-            //HybridBinarizer(ls)), hints);
-            //return rs[0].Text; // there is only one QRCode in the page
-
-            ////string sDecodedPicture = this.QRDecode(image, new QRCodeReader());
-
-
-            //BitMatrix btm = new BitMatrix(144,144);
-            
-            //com.google.zxing.qrcode.detector.Detector dt = new com.google.zxing.qrcode.detector.Detector();
-
-            
-
-            //SevenZipCompressor.SetLibraryPath(@"D:\Tomer\RedRock\RedRock\7zip\7z.dll");
-            //SevenZipCompressor szCompressor = new SevenZipCompressor();
-            
-            
-
-            /*
-            FileStream fsOutStream = new FileStream(OUTPUT_FOLDER_BASE + "test.7zip" , FileMode.CreateNew, FileAccess.Write);
-            fsOutStream.
-            FileStream fsInStream = new FileStream(m_strCurrFileLocation, FileMode.Open, FileAccess.Read);
-
-            int length = 0;
-            SevenZip.SevenZipCompressor.CompressStream(fsOutStream, fsInStream, length, null);
- */
             return (strZipPath);
         }
 
