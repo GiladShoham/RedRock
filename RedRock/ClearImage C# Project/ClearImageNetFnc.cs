@@ -8,11 +8,11 @@ using System.Threading;
 
 namespace Main
 {
-    internal class ClearImageNetFnc
+    public class ClearImageNetFnc
     {
-        internal System.Windows.Forms.TextBox txtRslt = null;
+        public System.Windows.Forms.TextBox txtRslt = null;
 #region ClearImageNet API demonstration
-	internal  string Read1DPro_Page_Zones  (string fileName, int page)
+	public  string Read1DPro_Page_Zones  (string fileName, int page)
 		{
 				string s = "";
 				BarcodeReader reader = new BarcodeReader(); 
@@ -58,7 +58,7 @@ namespace Main
 			System.Windows.Forms.Application.DoEvents();
 		}
 	
-	internal  string Read1DPro_File_WithEvents (string fileName)
+	public  string Read1DPro_File_WithEvents (string fileName)
 		{
 				BarcodeReader reader = new BarcodeReader(); 
 				// configure directions
@@ -152,7 +152,7 @@ namespace Main
          }
        }
 
-     internal string Read1DPro_Directory_Threads(string directoryName)
+     public string Read1DPro_Directory_Threads(string directoryName)
         {
             filesToScan = Directory.GetFiles(directoryName, "*.*", SearchOption.TopDirectoryOnly);
             filesScanned = 0;
@@ -170,7 +170,7 @@ namespace Main
             return txtRslt.Text;
         }
 
-    internal string Read1DPro_File(string fileName)
+    public string Read1DPro_File(string fileName)
         {
             BarcodeReader reader = new BarcodeReader();
             // configure directions
@@ -189,7 +189,7 @@ namespace Main
         }
 
 
-        internal string Read1DPro_Stream(string fileName)
+        public string Read1DPro_Stream(string fileName)
         {
             MemoryStream ms = Utility.FileToStream(fileName);
             BarcodeReader reader = new BarcodeReader();
@@ -208,7 +208,7 @@ namespace Main
             return s;
         }
 
-    internal string ReadPdf417_Page(string fileName, int page)
+    public string ReadPdf417_Page(string fileName, int page)
 		{
 				BarcodeReader reader = new BarcodeReader(); 
 				// for faster reading specify only required direction
@@ -223,7 +223,7 @@ namespace Main
 				return  s; 
 		}
 
-			internal string ReadDrvLic_Page(string fileName, int page)
+			public string ReadDrvLic_Page(string fileName, int page)
 			{
 				BarcodeReader reader = new BarcodeReader();
 				// for faster reading specify only required direction
@@ -247,7 +247,7 @@ namespace Main
 				return s;
 			}
 
-	internal  string ShowInfo (ImageInfo info, int nPage)
+	public  string ShowInfo (ImageInfo info, int nPage)
 		{
 			string s = "";
 			if (nPage == 1)
@@ -266,7 +266,7 @@ namespace Main
 			return s;
 		}
 		
-	internal  string Info (string fileName)
+	public  string Info (string fileName)
 		{
 			string s = "";
 			ImageIO io1 = new ImageIO();
@@ -284,7 +284,7 @@ namespace Main
                 return txtRslt.Text;
 		}
 
-	internal  string ReadDataMatrix_Page (string fileName, int page)
+	public  string ReadDataMatrix_Page (string fileName, int page)
 		{
 				BarcodeReader reader = new BarcodeReader(); 
 				// for faster reading specify only required direction
@@ -299,7 +299,7 @@ namespace Main
 				return  s; 
 		}
 
-	internal  string ReadQR_Page (string fileName, int page)
+	public  string ReadQR_Page (string fileName, int page)
 		{
 				BarcodeReader reader = new BarcodeReader(); 
 				// for faster reading specify only required direction
@@ -314,7 +314,7 @@ namespace Main
 				return  s; 
 		}
 
-        internal string Repair_Page(string fileName, int page, string fileOut, ImageFileFormat format)
+        public string Repair_Page(string fileName, int page, string fileOut, ImageFileFormat format)
         {
             string s = "";
             ImageEditor repair = new ImageEditor();
@@ -362,14 +362,14 @@ namespace Main
             System.Windows.Forms.Application.DoEvents();
         }
 
-        internal string Repair_File(string fileName, string fileOut, ImageFileFormat format)
+        public string Repair_File(string fileName, string fileOut, ImageFileFormat format)
         {
             ImageEditor repair = new ImageEditor();
             bool ret = repair.Edit(fileName, _OnEditPage, fileOut, format, true);
             return txtRslt.Text;
         }
 
-        internal string Repair_Stream(string fileName, string fileOut, ImageFileFormat format)
+        public string Repair_Stream(string fileName, string fileOut, ImageFileFormat format)
         {
             MemoryStream ms = Utility.FileToStream(fileName); 
             ImageEditor repair = new ImageEditor();
@@ -380,7 +380,7 @@ namespace Main
         }
 
         
-        internal string Tools_Page(string fileName, int page)
+        public string Tools_Page(string fileName, int page)
 		{
 				string s = "";
 				ImageEditor tools = new ImageEditor();
@@ -394,7 +394,7 @@ namespace Main
 				return  s; 
 		}
 
-	internal  string ServerInfo ()
+	public  string ServerInfo ()
 		{
         txtRslt.Text = txtRslt.Text + "ClearImageNet Server " + Server.Major.ToString() + "." + Server.Minor.ToString() + "." + Server.Release.ToString() + "  " + Server.Edition;
         txtRslt.Text = txtRslt.Text + Environment.NewLine;
@@ -419,7 +419,7 @@ namespace Main
             System.Windows.Forms.Application.DoEvents();
 		}
 	
-	internal  string Tools_Page_WithEvents (string fileName, int page, bool bSaveResults)
+	public  string Tools_Page_WithEvents (string fileName, int page, bool bSaveResults)
 		{
 				ImageEditor tools = new ImageEditor();
                 tools.Image.Open(fileName, page);

@@ -154,7 +154,7 @@ namespace RedSender
                 offset += array.Length;
             }
             
-            Components.Util
+            //Components.Util
 
             using (FileStream fs = File.Create(@"C:\Users\Nitzan\Desktop\RedRock\Result\Result" + sFileType))
             {
