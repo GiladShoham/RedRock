@@ -12,6 +12,7 @@ using com.google.zxing.qrcode.decoder;
 using com.google.zxing.common;
 using com.google.zxing.qrcode;
 using System.Collections;
+using IEC16022Sharp;
 
 namespace RedSender
 {
@@ -35,13 +36,21 @@ namespace RedSender
 
             while (nLastPicture == -1 || nAddedPictures < nLastPicture + 1)
             {
-                string[] filePaths = Directory.GetFiles(@sPicPath, "*.png");
+                string[] filePaths = Directory.GetFiles(@sPicPath, "*.bmp");
 
                 foreach (string strPic in filePaths)
                 {
                     // Load the picture
                     Bitmap image = (Bitmap)Image.FromFile(strPic);
-                    string sDecodedPicture = this.QRDecode(image, new QRCodeReader());
+
+                    ImageConverter converter = new ImageConverter();
+                    Byte[] DecodedArr = (byte[])converter.ConvertTo(image, typeof(byte[]));
+
+                    Byte[] FileIndex = new Byte[8];
+
+                    System.Buffer.BlockCopy(DecodedArr, 0, FileIndex, 0, 8);
+
+                    string sDecodedPicture = System.Text.Encoding.ASCII.GetString(FileIndex);
 
                     // Split the decoded string to the picture and picture index
                     int nSpace = sDecodedPicture.IndexOf(' ');
@@ -117,13 +126,27 @@ namespace RedSender
 
         private string QRDecode(Bitmap image, Reader decoder)
         {
+            /*
+            MemoryStream ms = new MemoryStream();
+            image.Save(ms,System.Drawing.Imaging.ImageFormat.Bmp);
+
+            DataMatrix dmDecoder = new DataMatrix(ms.ToArray(), image.Width, image.Height, EncodingType.Binary);
+
+            return dmDecoder.HexPbm;
+             * */
+            
+
+            
             var rgb = new RGBLuminanceSource(image, image.Width, image.Height);
             var hybrid = new HybridBinarizer(rgb);
 
             BinaryBitmap binBitmap = new BinaryBitmap(hybrid);
-            string sdecodedString = decoder.decode(binBitmap, null).Text;
+           // string sdecodedString = decoder.decode(binBitmap, null).RawBytes;
+            //Byte[] result = decoder.decode(binBitmap, null).;
 
-            return sdecodedString;
+            //return null;
+
+            return null;
         }
     }
 }
