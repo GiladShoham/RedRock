@@ -7,6 +7,7 @@ using System.Text;
 
 namespace Crypto
 {
+    
     public class EncDec
     {
         private const String delimiter = " ";
@@ -363,6 +364,8 @@ namespace Crypto
             fsIn.Close();
         }
 
+        //TODO : a better implemnt for the signing part can be found here:
+        // http://www.codeproject.com/Articles/8868/Implementing-Digital-Signing-in-NET
         public static byte[] Sign(byte[] textToSign)
         {
             SHA1 mySha1 = new SHA1CryptoServiceProvider();
@@ -436,6 +439,17 @@ namespace Crypto
                 offset += list[x].Length;
             }
             return result;
+        }
+
+        public static string CreateKey(int size)
+        {
+            //Generate a cryptographic random number.
+            RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+            byte[] buff = new byte[size];
+            rng.GetBytes(buff);
+
+            // Return a Base64 string representation of the random number.
+            return Convert.ToBase64String(buff);
         }
     }
 }

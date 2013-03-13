@@ -39,6 +39,8 @@
             this.decrypted = new System.Windows.Forms.TextBox();
             this.decryptedWrong = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.unsigned = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -79,7 +81,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(41, 175);
+            this.label4.Location = new System.Drawing.Point(41, 254);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(48, 13);
             this.label4.TabIndex = 4;
@@ -88,7 +90,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(9, 219);
+            this.label5.Location = new System.Drawing.Point(9, 298);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(80, 13);
             this.label5.TabIndex = 5;
@@ -112,21 +114,21 @@
             // 
             // decrypted
             // 
-            this.decrypted.Location = new System.Drawing.Point(112, 175);
+            this.decrypted.Location = new System.Drawing.Point(112, 254);
             this.decrypted.Name = "decrypted";
             this.decrypted.Size = new System.Drawing.Size(100, 20);
             this.decrypted.TabIndex = 8;
             // 
             // decryptedWrong
             // 
-            this.decryptedWrong.Location = new System.Drawing.Point(112, 212);
+            this.decryptedWrong.Location = new System.Drawing.Point(112, 291);
             this.decryptedWrong.Name = "decryptedWrong";
             this.decryptedWrong.Size = new System.Drawing.Size(100, 20);
             this.decryptedWrong.TabIndex = 9;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(112, 243);
+            this.button1.Location = new System.Drawing.Point(112, 322);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 10;
@@ -134,11 +136,29 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // unsigned
+            // 
+            this.unsigned.Location = new System.Drawing.Point(112, 176);
+            this.unsigned.Multiline = true;
+            this.unsigned.Name = "unsigned";
+            this.unsigned.Size = new System.Drawing.Size(257, 46);
+            this.unsigned.TabIndex = 11;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(37, 176);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(50, 13);
+            this.label6.TabIndex = 3;
+            this.label6.Text = "unsigend";
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(419, 292);
+            this.ClientSize = new System.Drawing.Size(616, 463);
+            this.Controls.Add(this.unsigned);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.decryptedWrong);
             this.Controls.Add(this.decrypted);
@@ -146,6 +166,7 @@
             this.Controls.Add(this.sigend);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.source);
@@ -170,6 +191,8 @@
         private System.Windows.Forms.TextBox decrypted;
         private System.Windows.Forms.TextBox decryptedWrong;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox unsigned;
+        private System.Windows.Forms.Label label6;
     }
 }
 
