@@ -78,7 +78,7 @@
   <ItemGroup>
     <Reference Include="ClearImageNet.70, Version=7.0.0.0, Culture=neutral, PublicKeyToken=71e5888be264aae0, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files\Inlite\ClearImage 7 SDK\ClearImageNet.70.dll</HintPath>
+      <HintPath>.\ClearImageNet.70.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>

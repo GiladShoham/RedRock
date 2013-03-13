@@ -68,6 +68,9 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SevenZipSharp">
+      <HintPath>..\7zip\SevenZipSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -98,6 +101,7 @@
     <Compile Include="NeuQuant.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Util.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
