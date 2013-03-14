@@ -52,7 +52,7 @@ namespace RedSender
 
         private void ProcessFiles()
         {
-            string sPicPath = @"C:\Users\Nitzan\Desktop\RedRock\Picture";
+            string sPicPath = @"C:\Users\Tomer\AppData\Local\Temp\333\GIF";
 
             string sFileResultType = String.Empty;
 
@@ -66,14 +66,15 @@ namespace RedSender
                   )
             {
                 string[] filePaths = Directory.GetFiles(@sPicPath, "*.*");
-
+                int i = 0;
                 foreach (string strPic in filePaths)
                 {
-                  /*  if (!this.stop_executing &&
-                        ImageExtensions.Contains(Path.GetExtension(strPic).ToUpperInvariant()))*/
+                    i++;
+                    /*  if (!this.stop_executing &&
+                          ImageExtensions.Contains(Path.GetExtension(strPic).ToUpperInvariant()))*/
                     {
                         // Load the picture
-                       // Bitmap image = (Bitmap)Image.FromFile(strPic);
+                        // Bitmap image = (Bitmap)Image.FromFile(strPic);
 
                         /*ImageConverter converter = new ImageConverter();
                         Byte[] DecodedArr = (byte[])converter.ConvertTo(image, typeof(byte[]));
@@ -84,51 +85,63 @@ namespace RedSender
 
                         string sDecodedPicture = System.Text.Encoding.ASCII.GetString(FileIndex);
                         */
-
-                        string sDecodedPicture = this.QRDecode(strPic, new QRCodeReader());
-
-                        // Split the decoded string to the picture and picture index
-                        int nSpace = sDecodedPicture.IndexOf(' ');
-                        string sPicIndex = sDecodedPicture.Substring(0, nSpace);
-                        string sPicture = sDecodedPicture.Remove(0, nSpace + 1);
-
-                        // If it is the last file - it will have *GIF* ending
-                        int nStarIndex = sPicIndex.IndexOf('*');
-
-                        if (nStarIndex != -1)
-                        {
-                            int nSecondStarIndex = sPicIndex.IndexOf('*', nStarIndex + 1);
-                            sFileResultType = sPicIndex.Substring(nStarIndex + 1, nSecondStarIndex - nStarIndex - 1);
-                            sPicIndex = sPicIndex.Substring(0, nStarIndex);
-                            nLastPicture = int.Parse(sPicIndex);
-                        }
-
-                        int nPicIndex;
-
                         try
                         {
-                            nPicIndex = int.Parse(sPicIndex);
+                            string sDecodedPicture = this.QRDecode(strPic, new QRCodeReader());
+                            if (sDecodedPicture != null)
+                            {
+                                // Split the decoded string to the picture and picture index
+                                int nSpace = sDecodedPicture.IndexOf(' ');
+                                string sPicIndex = sDecodedPicture.Substring(0, nSpace);
+                                string sPicture = sDecodedPicture.Remove(0, nSpace + 1);
+
+                                // If it is the last file - it will have *GIF* ending
+                                int nStarIndex = sPicIndex.IndexOf('*');
+
+                                if (nStarIndex != -1)
+                                {
+                                    int nSecondStarIndex = sPicIndex.IndexOf('*', nStarIndex + 1);
+                                    sFileResultType = sPicIndex.Substring(nStarIndex + 1, nSecondStarIndex - nStarIndex - 1);
+                                    sPicIndex = sPicIndex.Substring(0, nStarIndex);
+                                    nLastPicture = int.Parse(sPicIndex);
+                                }
+
+                                int nPicIndex;
+
+                                try
+                                {
+                                    nPicIndex = int.Parse(sPicIndex);
+                                }
+                                catch (Exception E)
+                                {
+                                    throw new Exception("Picture format not valid");
+                                }
+
+                                if (!htAllPictureParts.ContainsKey(nPicIndex))
+                                {
+                                    //Byte[] bb = Convert.FromBase64String("==");
+
+                                    //Byte[] btPic = Encoding.ASCII.GetBytes(sPicture);
+                                    Byte[] btPic = Convert.FromBase64String(sPicture.Trim());
+
+                                    htAllPictureParts.Add(nPicIndex, btPic);
+                                    ++nAddedPictures;
+
+                                    nTotalLenght = nTotalLenght + btPic.Length;
+
+                                    if (nLastPicture != -1 && nAddedPictures == nLastPicture + 1)
+                                    {
+                                        break;
+                                    }
+                                }
+                            }
                         }
-                        catch (Exception E)
+                        catch
                         {
-                            throw new Exception("Picture format not valid");
                         }
-
-                        if (!htAllPictureParts.ContainsKey(nPicIndex))
-                        {
-                            Byte[] bb = Convert.FromBase64String("==");
-
-                            //Byte[] btPic = Encoding.ASCII.GetBytes(sPicture);
-                            Byte[] btPic = Convert.FromBase64String(sPicture.Trim());
-
-                            htAllPictureParts.Add(nPicIndex, btPic);
-                            ++nAddedPictures;
-
-                            nTotalLenght = nTotalLenght + btPic.Length;
-                        }
+                        // delete the picture when closes
+                       // System.IO.File.Delete(strPic);
                     }
-                    // delete the picture when closes
-                    //        System.IO.File.Delete(sPicPath);
                 }
             }
             if (!stop_executing)
@@ -157,7 +170,7 @@ namespace RedSender
 
             
             string sTempFileName = Path.GetTempPath() + @"\tmp.txt";
-            string SOutFile =  @"C:\Users\Nitzan\Desktop\RedRock\Result\" + sFileType;
+            string SOutFile =  @"d:\result" + sFileType;
 
             File.WriteAllBytes(sTempFileName, rv);
 
@@ -205,15 +218,22 @@ namespace RedSender
 
 
             
-            //Byte[] result = decoder.decode(binBitmap, null).;
+                //Byte[] result = decoder.decode(binBitmap, null).;
 
-            //return null;
-            int nPerfixEnd = s.IndexOf("RAW BARCODE DATA:");
-            s = s.Remove(0, nPerfixEnd);
+                //return null;
+                if (s != "NO BARCODES")
+                {
+                    int nPerfixEnd = s.IndexOf("RAW BARCODE DATA:");
+                    s = s.Remove(0, nPerfixEnd);
 
-            int nLastPerfix = s.IndexOf(":");
-            s = s.Remove(0, nLastPerfix + 3);
-            s = s.Replace("--------------", String.Empty);
+                    int nLastPerfix = s.IndexOf(":");
+                    s = s.Remove(0, nLastPerfix + 3);
+                    s = s.Replace("--------------", String.Empty);
+                }
+                else
+                {
+                    s = null;
+                }
             return s;
         }
 
