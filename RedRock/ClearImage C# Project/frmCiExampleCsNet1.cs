@@ -571,6 +571,7 @@ namespace Main
 					
         private void cmdQR_Click(object sender, EventArgs e)
         {
+            /*
 			try 
 			{
                 if (!OpStart(sender)) return;
@@ -587,7 +588,7 @@ namespace Main
 			{ 
 				ShowError(ex); 
 			} 
-
+            */
         }		
         
         private void cmdBcEvents_Click(object sender, System.EventArgs e)
