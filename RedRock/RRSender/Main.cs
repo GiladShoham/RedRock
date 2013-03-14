@@ -103,7 +103,7 @@ namespace RRReciver
             byte[] btFullOrigianlArray = File.ReadAllBytes(strZipFile);
 
             // Create the bitmap array
-            Decimal dcNumOfFrame = Decimal.Ceiling(Decimal.Parse(btFullOrigianlArray.Length.ToString()) / Decimal.Parse((BYTES_IN_FRAME - NUM_OF_SEQUENCE_DIGIT).ToString()));
+            Decimal dcNumOfFrame = Decimal.Ceiling(Decimal.Parse(btFullOrigianlArray.Length.ToString()) / Decimal.Parse((BYTES_IN_FRAME + NUM_OF_SEQUENCE_DIGIT).ToString()));
             int NumOfFrame = int.Parse(dcNumOfFrame.ToString());
             Bitmap[] arrbpmOutput = new Bitmap[NumOfFrame];
 

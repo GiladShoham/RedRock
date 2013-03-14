@@ -166,7 +166,7 @@ namespace RedSender
                 offset += array.Length;
             }
 
-            
+            MessageBox.Show("פענוח בוצע!");
             int nFileNum = Directory.GetFiles(Path.GetTempPath()).Length;
             string sCompressedFileName = Path.GetTempPath() + "\\" + nFileNum + "temp.txt";
             string SOutFile = Path.GetTempPath() + "\\" + nFileNum + this.sFileType;
@@ -174,6 +174,8 @@ namespace RedSender
             File.WriteAllBytes(sCompressedFileName, rv);
 
             Gif.Components.Util.DecompressFileLZMA(sCompressedFileName, SOutFile);
+            File.Copy(SOutFile, @"c:\" + Path.GetFileName(SOutFile));
+            
 
             Process.Start(SOutFile);
 
