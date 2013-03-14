@@ -46,6 +46,7 @@
     <WarningLevel>4</WarningLevel>
     <DebugType>full</DebugType>
     <ErrorReport>prompt</ErrorReport>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -83,6 +84,9 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
+    <Reference Include="TouchlessLib">
+      <HintPath>.\TouchlessLib.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnimatedGifEncoder.cs">
@@ -102,12 +106,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Util.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\7zIntf15\SevenZip.csproj">
-      <Project>{FB4299E9-2F4F-494E-AAEB-44779E930F07}</Project>
-      <Name>SevenZip</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

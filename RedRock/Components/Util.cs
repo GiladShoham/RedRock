@@ -9,6 +9,14 @@ namespace Gif.Components
     public class Util
     {
 
+        public static void StartCapturing()
+        {
+            TouchlessLib.TouchlessMgr tc = new TouchlessLib.TouchlessMgr();
+            List<TouchlessLib.Camera> lsCamera = new List<TouchlessLib.Camera>(tc.Cameras);
+
+
+        }
+
         public static void CompressFileLZMA(string inFile, string outFile)
         {
             SevenZip.Sdk.Compression.Lzma.Encoder coder = new SevenZip.Sdk.Compression.Lzma.Encoder();

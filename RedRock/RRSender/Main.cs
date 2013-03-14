@@ -26,17 +26,17 @@ namespace RRReciver
         #region Data Members
 
         // Const Members
-        public const int BYTES_IN_FRAME        = 200;
+        public const int BYTES_IN_FRAME        = 220;
         public const int NUM_OF_SEQUENCE_DIGIT = 8;
-        public const int QR_HIGHET             = 57;
-        public const int QR_WIDTH              = 57;
+        public const int QR_HIGHET             = 69;
+        public const int QR_WIDTH              = 69;
         
         
         // Data Member
         private string OUTPUT_FOLDER_BMPS;
         private string OUTPUT_FOLDER_TXT;
         private string OUTPUT_FOLDER_GIF;
-        private string OUTPUT_FOLDER_BASE = @"D:\Tomer\Studies\Dropbox\RedRock\QRSample\New\";
+        private string OUTPUT_FOLDER_BASE;
         private string m_strCurrFileLocation = string.Empty;
         private string m_strFileName         = string.Empty;
         private int    m_nCurrTestNum        = 0;
@@ -78,8 +78,6 @@ namespace RRReciver
 
         private void btnCreateCode_Click(object sender, EventArgs e)
         {
-            OUTPUT_FOLDER_BASE = Path.GetTempPath();
-            //Util.StartCapturing();
             this.FileToQRCode(this.txtFilePath.Text);
         }
 
@@ -91,6 +89,8 @@ namespace RRReciver
         /// <returns></returns>
         public string FileToQRCode(string OriginalFile)
         {
+            OUTPUT_FOLDER_BASE = Path.GetTempPath();
+
             // Set the curr file details to the data members
             m_strCurrFileLocation = OriginalFile;
             m_strFileName = Path.GetFileName(m_strCurrFileLocation);
@@ -103,7 +103,7 @@ namespace RRReciver
             byte[] btFullOrigianlArray = File.ReadAllBytes(strZipFile);
 
             // Create the bitmap array
-            Decimal dcNumOfFrame = Decimal.Ceiling(Decimal.Parse(btFullOrigianlArray.Length.ToString()) / Decimal.Parse((BYTES_IN_FRAME + NUM_OF_SEQUENCE_DIGIT).ToString()));
+            Decimal dcNumOfFrame = Decimal.Ceiling(Decimal.Parse(btFullOrigianlArray.Length.ToString()) / Decimal.Parse((BYTES_IN_FRAME - NUM_OF_SEQUENCE_DIGIT).ToString()));
             int NumOfFrame = int.Parse(dcNumOfFrame.ToString());
             Bitmap[] arrbpmOutput = new Bitmap[NumOfFrame];
 
