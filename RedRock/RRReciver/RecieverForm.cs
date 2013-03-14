@@ -16,6 +16,11 @@ using System.Threading;
 using com.google.zxing.datamatrix.detector;
 using Main;
 using Gif.Components;
+using System.Runtime.InteropServices;
+using WIA;
+
+
+// namespace of imported WIA Scripting COM component
 
 namespace RedSender
 {
@@ -42,6 +47,8 @@ namespace RedSender
             backgroundThread.Start();
 
             MessageBox.Show("מבוצעת קליטה");*/
+            
+
             this.ProcessFiles();
         }
 
@@ -69,24 +76,10 @@ namespace RedSender
 
                 foreach (string strPic in filePaths)
                 {
-                  /*  if (!this.stop_executing &&
-                        ImageExtensions.Contains(Path.GetExtension(strPic).ToUpperInvariant()))*/
+                    string sDecodedPicture = this.QRDecode(strPic, new QRCodeReader());
+
+                    if (sDecodedPicture != "NO BARCODES")
                     {
-                        // Load the picture
-                       // Bitmap image = (Bitmap)Image.FromFile(strPic);
-
-                        /*ImageConverter converter = new ImageConverter();
-                        Byte[] DecodedArr = (byte[])converter.ConvertTo(image, typeof(byte[]));
-
-                        Byte[] FileIndex = new Byte[8];
-
-                        System.Buffer.BlockCopy(DecodedArr, 0, FileIndex, 0, 8);
-
-                        string sDecodedPicture = System.Text.Encoding.ASCII.GetString(FileIndex);
-                        */
-
-                        string sDecodedPicture = this.QRDecode(strPic, new QRCodeReader());
-
                         // Split the decoded string to the picture and picture index
                         int nSpace = sDecodedPicture.IndexOf(' ');
                         string sPicIndex = sDecodedPicture.Substring(0, nSpace);
@@ -116,9 +109,6 @@ namespace RedSender
 
                         if (!htAllPictureParts.ContainsKey(nPicIndex))
                         {
-                            Byte[] bb = Convert.FromBase64String("==");
-
-                            //Byte[] btPic = Encoding.ASCII.GetBytes(sPicture);
                             Byte[] btPic = Convert.FromBase64String(sPicture.Trim());
 
                             htAllPictureParts.Add(nPicIndex, btPic);
@@ -127,8 +117,12 @@ namespace RedSender
                             nTotalLenght = nTotalLenght + btPic.Length;
                         }
                     }
-                    // delete the picture when closes
-                    //        System.IO.File.Delete(sPicPath);
+
+                    if (stop_executing ||
+                        (nLastPicture != -1 && nAddedPictures == nLastPicture + 1))
+                    {
+                        break;
+                    }
                 }
             }
             if (!stop_executing)
@@ -141,6 +135,10 @@ namespace RedSender
             }
         }
 
+        private void CapturePicture()
+        {
+
+        }
 
         private void CreateResultFile(Hashtable htPictures, int nTotalLenght, string sFileType)
         {
@@ -164,57 +162,31 @@ namespace RedSender
             Gif.Components.Util.DecompressFileLZMA(sTempFileName, SOutFile);
 
             MessageBox.Show("saved seccessfully");
-        }
+        }        
 
         private string QRDecode(string imagepath, Reader decoder)
         {
-
             string sdecodedString = string.Empty;
-            /*
-                LuminanceSource source = new RGBLuminanceSource(image, image.Width, image.Height);
-                var rgb = new HybridBinarizer(source);
-                var binBitmap = new BinaryBitmap(rgb);
-                
-                BitMatrix bm = binBitmap.BlackMatrix;*/
 
-
-                ClearImageNetFnc ciNetProc = new ClearImageNetFnc();
-                string s = ciNetProc.ReadQR_Page(imagepath, 1);
+            ClearImageNetFnc ciNetProc = new ClearImageNetFnc();
+            string s = ciNetProc.ReadQR_Page(imagepath, 1);
 		
+            if (s != "NO BARCODES")
+            {
+                int nPerfixEnd = s.IndexOf("RAW BARCODE DATA:");
+                s = s.Remove(0, nPerfixEnd);
 
+                int nLastPerfix = s.IndexOf(":");
+                s = s.Remove(0, nLastPerfix + 3);
+                s = s.Replace("--------------", String.Empty);
+            }
 
-
-                 /*   
-                Detector detector = new Detector(bm);
-                DetectorResult result = detector.detect();
-
-                string retStr = "Found at points ";
-                BitMatrix QRImageData = result.Bits;
-                  */
-/*
-                image m = QRImageData;
-                LuminanceSource source = new RGBLuminanceSource(QRImageData, image.Width, image.Height);
-                var rgb = new HybridBinarizer(source);
-                var binBitmap = new BinaryBitmap(rgb);
-
-
-                BinaryBitmap m = new BinaryBitmap(
-
-                sdecodedString = decoder.decode(().Text;*/
-  
-
-
-            
-            //Byte[] result = decoder.decode(binBitmap, null).;
-
-            //return null;
-            int nPerfixEnd = s.IndexOf("RAW BARCODE DATA:");
-            s = s.Remove(0, nPerfixEnd);
-
-            int nLastPerfix = s.IndexOf(":");
-            s = s.Remove(0, nLastPerfix + 3);
-            s = s.Replace("--------------", String.Empty);
             return s;
+        }
+
+        private void TakePicture()
+        {
+
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
