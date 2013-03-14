@@ -7,6 +7,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using com.google.zxing;
+using com.google.zxing.common;
+using com.google.zxing.qrcode;
+
 
 namespace RedRock
 {
@@ -132,6 +136,7 @@ namespace RedRock
 
         public void AddUpdateUser(User user)
         {
+            
             int index = -1;
             bool equals = false;
             foreach (var user1 in users)
@@ -232,6 +237,53 @@ namespace RedRock
                 dataGridView1.Refresh();
             }
 
+        }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            DataGridViewRow row = dataGridView1.SelectedCells[0].OwningRow;
+            string key = row.Cells["ColKey"].Value.ToString();
+
+            QRCodeWriter qcCode = new QRCodeWriter();
+            ByteMatrix btMatrix = qcCode.encode(key, BarcodeFormat.QR_CODE, 570, 570);
+            Form keyQR = new KeyQR(btMatrix.ToBitmap());
+            keyQR.Show();
+            
+
+        }
+
+        private void bindingNavigatorDeleteItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnSendMail_Click(object sender, EventArgs e)
+        {
+            RRReciver.Main QRsender = new RRReciver.Main();
+            string filePath = "C:/temp/lotem.png";
+            string qrFilePath = QRsender.FileToQRCode(filePath);
+
+            
+            string userName = "Tomer Shohat";
+            gmail.email_send(userName, qrFilePath);
+            //Send a message with one line of code
+            //GmailMessage.SendFromGmail("shoham.gilad", "diablo17", "shoham.gilad@gmail.com", "working", "message body");
+
+            ////Send a message with one line of code with a MailMessage object 
+            //RC.Gmail.GmailMessage.SendMailMessageFromGmail("username", "password", mailMessageObject);
+
+            ////Use the GmailMessage object to create and send your message 
+            
+            //RC.Gmail.GmailMessage gmailMsg = new RC.Gmail.GmailMessage("username", "password");
+            //gmailMsg.To = "RCcode@gmail.com";
+            //gmailMsg.From = "fromAddress@gmail.com";
+            //gmailMsg.Subject = "C# Test Message";
+            //gmailMsg.Body = "Test body";
+
+            //MailAttachment attachment = new MailAttachment(@"c:\testfile.txt");
+            //gmailMsg.Attachments.Add(attachment);
+
+            //gmailMsg.Send();
         }
     }
 }
