@@ -26,10 +26,10 @@ namespace RRReciver
         #region Data Members
 
         // Const Members
-        public const int BYTES_IN_FRAME        = 800;
+        public const int BYTES_IN_FRAME        = 200;
         public const int NUM_OF_SEQUENCE_DIGIT = 8;
-        public const int QR_HIGHET             = 144;
-        public const int QR_WIDTH              = 144;
+        public const int QR_HIGHET             = 57;
+        public const int QR_WIDTH              = 57;
         
         
         // Data Member
@@ -134,7 +134,22 @@ namespace RRReciver
                 // Encode the sting to QR code
                 strOneFrame = strOneFrame.PadRight(output_size, ' ');
                 ByteMatrix btMatrix = qcCode.encode(strOneFrame, BarcodeFormat.QR_CODE, QR_WIDTH, QR_HIGHET);
-                btMatrix.ToBitmap().Save(OUTPUT_FOLDER_BMPS + nCurrFrameNumber + ".bmp", ImageFormat.Bmp);
+
+                // Create an Encoder object based on the GUID 
+                // for the Quality parameter category.
+                System.Drawing.Imaging.Encoder myEncoder =
+                    System.Drawing.Imaging.Encoder.Quality;
+
+                // Create an EncoderParameters object. 
+                // An EncoderParameters object has an array of EncoderParameter 
+                // objects. In this case, there is only one 
+                // EncoderParameter object in the array.
+                EncoderParameters myEncoderParameters = new EncoderParameters(1);
+
+                EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 100L);
+                myEncoderParameters.Param[0] = myEncoderParameter;
+
+                btMatrix.ToBitmap().Save(OUTPUT_FOLDER_BMPS + nCurrFrameNumber + ".jpg", GetEncoder(ImageFormat.Jpeg), myEncoderParameters);
 
                 // Add text file for debug
                 File.WriteAllText(OUTPUT_FOLDER_TXT + nCurrFrameNumber + ".txt", strOneFrame);
@@ -145,6 +160,21 @@ namespace RRReciver
             string strGIFFileName = this.CreateAnimitedGif();
 
             return (strGIFFileName);
+        }
+
+        private ImageCodecInfo GetEncoder(ImageFormat format)
+        {
+
+            ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
+
+            foreach (ImageCodecInfo codec in codecs)
+            {
+                if (codec.FormatID == format.Guid)
+                {
+                    return codec;
+                }
+            }
+            return null;
         }
 
         private string Comprass(string tarPath)
@@ -158,25 +188,68 @@ namespace RRReciver
 
         private string CreateAnimitedGif()
         {
+
+
+
+
+
             /* create Gif */
             // you should replace filepath
-            string[] imageFilePaths = Directory.GetFiles(OUTPUT_FOLDER_BMPS);
-
+            
             String outputFilePath = OUTPUT_FOLDER_GIF + "output.gif";
-            AnimatedGifEncoder ege = new AnimatedGifEncoder();
-            ege.Start(outputFilePath);
-            ege.SetDelay(500);
-            //-1:no repeat,0:always repeat
-            ege.SetRepeat(0);
-            for (int i = 0, count = imageFilePaths.Length; i < count; i++)
+
+            
+            byte[] GifAnimation = { 33, 255, 11, 78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48, 3, 1, 0, 0, 0 };
+
+            string[] Files = Directory.GetFiles(OUTPUT_FOLDER_BMPS, "*.jpg");
+            MemoryStream MS = new MemoryStream();
+            BinaryReader BR = new BinaryReader(MS);
+            BinaryWriter BW = new BinaryWriter(new FileStream(outputFilePath, FileMode.Create));
+            Image.FromFile(Files[0]).Save(MS, ImageFormat.Gif);
+            byte[] B = MS.ToArray();
+            B[10] = (byte)(B[10] & 0X78); //No global color table.
+            BW.Write(B, 0, 13);
+            BW.Write(GifAnimation);
+            WriteGifImg(B, BW);
+            for (int I = 1; I < Files.Length; I++)
             {
-                ege.AddFrame(Image.FromFile(imageFilePaths[i]));
+                MS.SetLength(0);
+                Image.FromFile(Files[I]).Save(MS, ImageFormat.Gif);
+                B = MS.ToArray();
+                WriteGifImg(B, BW);
             }
-            ege.Finish();
+            BW.Write(B[B.Length - 1]);
+            BW.Close();
+            MS.Dispose();
+
+
+
+            //AnimatedGifEncoder ege = new AnimatedGifEncoder();
+            //ege.SetQuality(32000);
+            //ege.Start(outputFilePath);
+            //ege.SetDelay(1000);
+            ////-1:no repeat,0:always repeat
+            //ege.SetRepeat(0);
+            //for (int i = 0, count = imageFilePaths.Length; i < count; i++)
+            //{
+            //    ege.AddFrame(Image.FromFile(imageFilePaths[i]));
+            //}
+            //ege.Finish();
 
             return (outputFilePath);
         }
 
+        public void WriteGifImg(byte[] B, BinaryWriter BW)
+        {
+            byte[] Delay = { 10, 0 };
+
+            B[785] = Delay[0]; //5 secs delay
+            B[786] = Delay[1];
+            B[798] = (byte)(B[798] | 0X87);
+            BW.Write(B, 781, 18);
+            BW.Write(B, 13, 768);
+            BW.Write(B, 799, B.Length - 800);
+        }
 
         public static T[] ConcatArrays<T>(params T[][] list)
         {
