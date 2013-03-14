@@ -50,8 +50,10 @@
             this.bindingNavigatorSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
-            this.txtMail = new System.Windows.Forms.TextBox();
+            this.txtFilePath = new System.Windows.Forms.TextBox();
             this.btnSendMail = new System.Windows.Forms.Button();
+            this.btnFileUpload = new System.Windows.Forms.Button();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).BeginInit();
             this.bindingNavigator1.SuspendLayout();
@@ -240,17 +242,16 @@
             this.toolStripButton2.Text = "toolStripButton2";
             this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
             // 
-            // txtMail
+            // txtFilePath
             // 
-            this.txtMail.Location = new System.Drawing.Point(362, 292);
-            this.txtMail.Name = "txtMail";
-            this.txtMail.Size = new System.Drawing.Size(100, 20);
-            this.txtMail.TabIndex = 2;
-            this.txtMail.Text = "מייל";
+            this.txtFilePath.Location = new System.Drawing.Point(358, 291);
+            this.txtFilePath.Name = "txtFilePath";
+            this.txtFilePath.Size = new System.Drawing.Size(270, 20);
+            this.txtFilePath.TabIndex = 2;
             // 
             // btnSendMail
             // 
-            this.btnSendMail.Location = new System.Drawing.Point(225, 292);
+            this.btnSendMail.Location = new System.Drawing.Point(26, 288);
             this.btnSendMail.Name = "btnSendMail";
             this.btnSendMail.Size = new System.Drawing.Size(75, 23);
             this.btnSendMail.TabIndex = 3;
@@ -258,13 +259,28 @@
             this.btnSendMail.UseVisualStyleBackColor = true;
             this.btnSendMail.Click += new System.EventHandler(this.btnSendMail_Click);
             // 
+            // btnFileUpload
+            // 
+            this.btnFileUpload.Location = new System.Drawing.Point(634, 289);
+            this.btnFileUpload.Name = "btnFileUpload";
+            this.btnFileUpload.Size = new System.Drawing.Size(75, 23);
+            this.btnFileUpload.TabIndex = 4;
+            this.btnFileUpload.Text = "בחר קובץ";
+            this.btnFileUpload.UseVisualStyleBackColor = true;
+            this.btnFileUpload.Click += new System.EventHandler(this.btnFileUpload_Click);
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            // 
             // MangeUsers
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(730, 428);
+            this.Controls.Add(this.btnFileUpload);
             this.Controls.Add(this.btnSendMail);
-            this.Controls.Add(this.txtMail);
+            this.Controls.Add(this.txtFilePath);
             this.Controls.Add(this.bindingNavigator1);
             this.Controls.Add(this.dataGridView1);
             this.Name = "MangeUsers";
@@ -301,7 +317,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn ColPhone;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColMail;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColKey;
-        private System.Windows.Forms.TextBox txtMail;
+        private System.Windows.Forms.TextBox txtFilePath;
         private System.Windows.Forms.Button btnSendMail;
+        private System.Windows.Forms.Button btnFileUpload;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
     }
 }

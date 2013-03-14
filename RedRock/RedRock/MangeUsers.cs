@@ -260,7 +260,9 @@ namespace RedRock
         private void btnSendMail_Click(object sender, EventArgs e)
         {
             RRReciver.Main QRsender = new RRReciver.Main();
-            string filePath = "C:/temp/lotem.png";
+            //string filePath = "C:/temp/lotem.png";
+            //string filePath = "C:/temp/file.txt";
+            string filePath = txtFilePath.Text;
             string qrFilePath = QRsender.FileToQRCode(filePath);
 
             
@@ -284,6 +286,14 @@ namespace RedRock
             //gmailMsg.Attachments.Add(attachment);
 
             //gmailMsg.Send();
+        }
+
+        private void btnFileUpload_Click(object sender, EventArgs e)
+        {
+            DialogResult dg = openFileDialog1.ShowDialog();
+            string fileName = openFileDialog1.FileName;
+            txtFilePath.Text = fileName;
+
         }
     }
 }
