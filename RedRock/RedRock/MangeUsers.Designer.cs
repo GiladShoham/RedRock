@@ -31,6 +31,11 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MangeUsers));
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.ColID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColPhone = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColMail = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColKey = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.bindingNavigator1 = new System.Windows.Forms.BindingNavigator(this.components);
             this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
             this.bindingNavigatorCountItem = new System.Windows.Forms.ToolStripLabel();
@@ -45,12 +50,10 @@
             this.bindingNavigatorSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
-            this.btnExit = new System.Windows.Forms.Button();
-            this.ColID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColPhone = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColMail = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ColKey = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.txtFilePath = new System.Windows.Forms.TextBox();
+            this.btnSendMail = new System.Windows.Forms.Button();
+            this.btnFileUpload = new System.Windows.Forms.Button();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).BeginInit();
             this.bindingNavigator1.SuspendLayout();
@@ -73,6 +76,34 @@
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.RowLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_RowLeave);
             this.dataGridView1.UserAddedRow += new System.Windows.Forms.DataGridViewRowEventHandler(this.dataGridView1_UserAddedRow);
+            // 
+            // ColID
+            // 
+            this.ColID.HeaderText = "ת.ז";
+            this.ColID.Name = "ColID";
+            // 
+            // ColName
+            // 
+            this.ColName.HeaderText = "שם";
+            this.ColName.Name = "ColName";
+            // 
+            // ColPhone
+            // 
+            this.ColPhone.HeaderText = "טלפון";
+            this.ColPhone.Name = "ColPhone";
+            // 
+            // ColMail
+            // 
+            this.ColMail.HeaderText = "מייל";
+            this.ColMail.Name = "ColMail";
+            this.ColMail.Width = 200;
+            // 
+            // ColKey
+            // 
+            this.ColKey.HeaderText = "מפתח";
+            this.ColKey.Name = "ColKey";
+            this.ColKey.ReadOnly = true;
+            this.ColKey.Width = 140;
             // 
             // bindingNavigator1
             // 
@@ -129,6 +160,7 @@
             this.bindingNavigatorDeleteItem.RightToLeftAutoMirrorImage = true;
             this.bindingNavigatorDeleteItem.Size = new System.Drawing.Size(23, 22);
             this.bindingNavigatorDeleteItem.Text = "Delete";
+            this.bindingNavigatorDeleteItem.Click += new System.EventHandler(this.bindingNavigatorDeleteItem_Click);
             // 
             // bindingNavigatorMoveFirstItem
             // 
@@ -198,6 +230,7 @@
             this.toolStripButton1.Name = "toolStripButton1";
             this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
             this.toolStripButton1.Text = "toolStripButton1";
+            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
             // toolStripButton2
             // 
@@ -209,50 +242,45 @@
             this.toolStripButton2.Text = "toolStripButton2";
             this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
             // 
-            // btnExit
+            // txtFilePath
             // 
-            this.btnExit.Location = new System.Drawing.Point(119, 392);
-            this.btnExit.Name = "btnExit";
-            this.btnExit.Size = new System.Drawing.Size(75, 23);
-            this.btnExit.TabIndex = 4;
-            this.btnExit.Text = "יציאה";
-            this.btnExit.UseVisualStyleBackColor = true;
-            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
+            this.txtFilePath.Location = new System.Drawing.Point(358, 291);
+            this.txtFilePath.Name = "txtFilePath";
+            this.txtFilePath.Size = new System.Drawing.Size(270, 20);
+            this.txtFilePath.TabIndex = 2;
             // 
-            // ColID
+            // btnSendMail
             // 
-            this.ColID.HeaderText = "ת.ז";
-            this.ColID.Name = "ColID";
+            this.btnSendMail.Location = new System.Drawing.Point(26, 288);
+            this.btnSendMail.Name = "btnSendMail";
+            this.btnSendMail.Size = new System.Drawing.Size(75, 23);
+            this.btnSendMail.TabIndex = 3;
+            this.btnSendMail.Text = "שלח מייל";
+            this.btnSendMail.UseVisualStyleBackColor = true;
+            this.btnSendMail.Click += new System.EventHandler(this.btnSendMail_Click);
             // 
-            // ColName
+            // btnFileUpload
             // 
-            this.ColName.HeaderText = "שם";
-            this.ColName.Name = "ColName";
+            this.btnFileUpload.Location = new System.Drawing.Point(634, 289);
+            this.btnFileUpload.Name = "btnFileUpload";
+            this.btnFileUpload.Size = new System.Drawing.Size(75, 23);
+            this.btnFileUpload.TabIndex = 4;
+            this.btnFileUpload.Text = "בחר קובץ";
+            this.btnFileUpload.UseVisualStyleBackColor = true;
+            this.btnFileUpload.Click += new System.EventHandler(this.btnFileUpload_Click);
             // 
-            // ColPhone
+            // openFileDialog1
             // 
-            this.ColPhone.HeaderText = "טלפון";
-            this.ColPhone.Name = "ColPhone";
-            // 
-            // ColMail
-            // 
-            this.ColMail.HeaderText = "מייל";
-            this.ColMail.Name = "ColMail";
-            this.ColMail.Width = 200;
-            // 
-            // ColKey
-            // 
-            this.ColKey.HeaderText = "מפתח";
-            this.ColKey.Name = "ColKey";
-            this.ColKey.ReadOnly = true;
-            this.ColKey.Width = 140;
+            this.openFileDialog1.FileName = "openFileDialog1";
             // 
             // MangeUsers
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(730, 428);
-            this.Controls.Add(this.btnExit);
+            this.Controls.Add(this.btnFileUpload);
+            this.Controls.Add(this.btnSendMail);
+            this.Controls.Add(this.txtFilePath);
             this.Controls.Add(this.bindingNavigator1);
             this.Controls.Add(this.dataGridView1);
             this.Name = "MangeUsers";
@@ -284,11 +312,14 @@
         private System.Windows.Forms.ToolStripSeparator bindingNavigatorSeparator2;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.ToolStripButton toolStripButton2;
-        private System.Windows.Forms.Button btnExit;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColID;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColName;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColPhone;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColMail;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColKey;
+        private System.Windows.Forms.TextBox txtFilePath;
+        private System.Windows.Forms.Button btnSendMail;
+        private System.Windows.Forms.Button btnFileUpload;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
     }
 }
