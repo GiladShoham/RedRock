@@ -299,14 +299,14 @@ namespace Main
 				return  s; 
 		}
 
-	public  string ReadQR_Page (string fileName, int page)
+	public  string ReadQR_Page (Bitmap btPic)
 		{
 				BarcodeReader reader = new BarcodeReader(); 
 				// for faster reading specify only required direction
 				reader.Horizontal = true; reader.Vertical = true; reader.Diagonal = true;
 				// specify type
 				reader.QR = true;
-				Barcode[] barcodes = reader.Read (fileName, page); 
+				Barcode[] barcodes = reader.Read (btPic); 
 				string s = "";  int cnt = 0;
 				foreach (Barcode bc in barcodes) 
 					{cnt++; AddBarcode(ref s, cnt, bc); } 

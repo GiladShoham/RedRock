@@ -30,11 +30,12 @@
         {
             this.btnStartRecieving = new System.Windows.Forms.Button();
             this.btCancel = new System.Windows.Forms.Button();
+            this.videoSourcePlayer1 = new AForge.Controls.VideoSourcePlayer();
             this.SuspendLayout();
             // 
             // btnStartRecieving
             // 
-            this.btnStartRecieving.Location = new System.Drawing.Point(123, 29);
+            this.btnStartRecieving.Location = new System.Drawing.Point(242, 363);
             this.btnStartRecieving.Name = "btnStartRecieving";
             this.btnStartRecieving.Size = new System.Drawing.Size(75, 23);
             this.btnStartRecieving.TabIndex = 0;
@@ -44,7 +45,7 @@
             // 
             // btCancel
             // 
-            this.btCancel.Location = new System.Drawing.Point(12, 29);
+            this.btCancel.Location = new System.Drawing.Point(12, 363);
             this.btCancel.Name = "btCancel";
             this.btCancel.Size = new System.Drawing.Size(75, 23);
             this.btCancel.TabIndex = 1;
@@ -52,11 +53,21 @@
             this.btCancel.UseVisualStyleBackColor = true;
             this.btCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
+            // videoSourcePlayer1
+            // 
+            this.videoSourcePlayer1.Location = new System.Drawing.Point(12, 12);
+            this.videoSourcePlayer1.Name = "videoSourcePlayer1";
+            this.videoSourcePlayer1.Size = new System.Drawing.Size(305, 334);
+            this.videoSourcePlayer1.TabIndex = 2;
+            this.videoSourcePlayer1.Text = "videoSourcePlayer1";
+            this.videoSourcePlayer1.VideoSource = null;
+            // 
             // RedRock
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(210, 68);
+            this.ClientSize = new System.Drawing.Size(329, 398);
+            this.Controls.Add(this.videoSourcePlayer1);
             this.Controls.Add(this.btCancel);
             this.Controls.Add(this.btnStartRecieving);
             this.Name = "RedRock";
@@ -70,6 +81,7 @@
 
         private System.Windows.Forms.Button btnStartRecieving;
         private System.Windows.Forms.Button btCancel;
+        private AForge.Controls.VideoSourcePlayer videoSourcePlayer1;
 
     }
 }
