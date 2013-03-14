@@ -11,12 +11,13 @@ namespace RedRock
     {
     
 
-public static void email_send(string senderUser, string filePath)
+public static void email_send(string destination, string senderUser, string filePath)
 {
     MailMessage mail = new MailMessage();
     SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
     mail.From = new MailAddress("redrock.sender@gmail.com");
-    mail.To.Add("shoham.gilad@gmail.com");
+    //mail.To.Add("shoham.gilad@gmail.com");
+    mail.To.Add(destination);
     mail.Subject = "Mail from " + senderUser;
     mail.Body = "use the red rock to open file";
 

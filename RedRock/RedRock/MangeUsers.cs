@@ -260,14 +260,17 @@ namespace RedRock
         private void btnSendMail_Click(object sender, EventArgs e)
         {
             RRReciver.Main QRsender = new RRReciver.Main();
+            DataGridViewRow row = dataGridView1.SelectedCells[0].OwningRow;
+            
             //string filePath = "C:/temp/lotem.png";
             //string filePath = "C:/temp/file.txt";
             string filePath = txtFilePath.Text;
             string qrFilePath = QRsender.FileToQRCode(filePath);
+            string destination = row.Cells["ColMail"].Value.ToString();
 
             
             string userName = "Tomer Shohat";
-            gmail.email_send(userName, qrFilePath);
+            gmail.email_send(destination, userName, qrFilePath);
             //Send a message with one line of code
             //GmailMessage.SendFromGmail("shoham.gilad", "diablo17", "shoham.gilad@gmail.com", "working", "message body");
 
