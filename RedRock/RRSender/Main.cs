@@ -26,10 +26,10 @@ namespace RRReciver
         #region Data Members
 
         // Const Members
-        public const int BYTES_IN_FRAME        = 220;
+        public const int BYTES_IN_FRAME        = 280;
         public const int NUM_OF_SEQUENCE_DIGIT = 8;
-        public const int QR_HIGHET             = 69;
-        public const int QR_WIDTH              = 69;
+        public const int QR_HIGHET             = 61;
+        public const int QR_WIDTH              = 61;
         
         
         // Data Member
@@ -103,7 +103,7 @@ namespace RRReciver
             byte[] btFullOrigianlArray = File.ReadAllBytes(strZipFile);
 
             // Create the bitmap array
-            Decimal dcNumOfFrame = Decimal.Ceiling(Decimal.Parse(btFullOrigianlArray.Length.ToString()) / Decimal.Parse((BYTES_IN_FRAME + NUM_OF_SEQUENCE_DIGIT).ToString()));
+            Decimal dcNumOfFrame = Decimal.Ceiling(Decimal.Parse(btFullOrigianlArray.Length.ToString()) / Decimal.Parse((BYTES_IN_FRAME).ToString()));
             int NumOfFrame = int.Parse(dcNumOfFrame.ToString());
             Bitmap[] arrbpmOutput = new Bitmap[NumOfFrame];
 
@@ -129,9 +129,10 @@ namespace RRReciver
 
                 // Add the number (with the 0 if it is only one digit) to the start of the image
                 string strOneFrame = string.Format("{0:00}", nCurrFrameNumber) + strLastStringAddon + " " + Convert.ToBase64String(btOneFrame);
-                int output_size = ((BYTES_IN_FRAME * 4) / 3) + (BYTES_IN_FRAME / 96) - 1;
+                int output_size = (((BYTES_IN_FRAME * 4) / 3) + (BYTES_IN_FRAME / 96) - 1);
 
                 // Encode the sting to QR code
+                
                 strOneFrame = strOneFrame.PadRight(output_size, ' ');
                 ByteMatrix btMatrix = qcCode.encode(strOneFrame, BarcodeFormat.QR_CODE, QR_WIDTH, QR_HIGHET);
 
@@ -241,7 +242,7 @@ namespace RRReciver
 
         public void WriteGifImg(byte[] B, BinaryWriter BW)
         {
-            byte[] Delay = { 10, 0 };
+            byte[] Delay = { 30, 0 };
 
             B[785] = Delay[0]; //5 secs delay
             B[786] = Delay[1];

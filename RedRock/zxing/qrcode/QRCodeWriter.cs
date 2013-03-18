@@ -61,7 +61,8 @@ namespace com.google.zxing.qrcode
 				throw new System.ArgumentException("Requested dimensions are too small: " + width + 'x' + height);
 			}
 			
-			ErrorCorrectionLevel errorCorrectionLevel = ErrorCorrectionLevel.L;
+            // TODO: Change error correction level
+			ErrorCorrectionLevel errorCorrectionLevel = ErrorCorrectionLevel.M;
 			if (hints != null)
 			{
 				ErrorCorrectionLevel requestedECLevel = (ErrorCorrectionLevel) hints[EncodeHintType.ERROR_CORRECTION];

@@ -31,11 +31,12 @@
             this.btnStartRecieving = new System.Windows.Forms.Button();
             this.btCancel = new System.Windows.Forms.Button();
             this.videoSourcePlayer1 = new AForge.Controls.VideoSourcePlayer();
+            this.lblStatus = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnStartRecieving
             // 
-            this.btnStartRecieving.Location = new System.Drawing.Point(242, 363);
+            this.btnStartRecieving.Location = new System.Drawing.Point(518, 506);
             this.btnStartRecieving.Name = "btnStartRecieving";
             this.btnStartRecieving.Size = new System.Drawing.Size(75, 23);
             this.btnStartRecieving.TabIndex = 0;
@@ -45,7 +46,7 @@
             // 
             // btCancel
             // 
-            this.btCancel.Location = new System.Drawing.Point(12, 363);
+            this.btCancel.Location = new System.Drawing.Point(24, 506);
             this.btCancel.Name = "btCancel";
             this.btCancel.Size = new System.Drawing.Size(75, 23);
             this.btCancel.TabIndex = 1;
@@ -55,18 +56,27 @@
             // 
             // videoSourcePlayer1
             // 
-            this.videoSourcePlayer1.Location = new System.Drawing.Point(12, 12);
+            this.videoSourcePlayer1.Location = new System.Drawing.Point(24, 26);
             this.videoSourcePlayer1.Name = "videoSourcePlayer1";
-            this.videoSourcePlayer1.Size = new System.Drawing.Size(305, 334);
+            this.videoSourcePlayer1.Size = new System.Drawing.Size(569, 374);
             this.videoSourcePlayer1.TabIndex = 2;
             this.videoSourcePlayer1.Text = "videoSourcePlayer1";
             this.videoSourcePlayer1.VideoSource = null;
+            // 
+            // lblStatus
+            // 
+            this.lblStatus.Location = new System.Drawing.Point(24, 402);
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(569, 101);
+            this.lblStatus.TabIndex = 3;
+            this.lblStatus.Text = "נקלט:";
             // 
             // RedRock
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(329, 398);
+            this.ClientSize = new System.Drawing.Size(619, 541);
+            this.Controls.Add(this.lblStatus);
             this.Controls.Add(this.videoSourcePlayer1);
             this.Controls.Add(this.btCancel);
             this.Controls.Add(this.btnStartRecieving);
@@ -82,6 +92,7 @@
         private System.Windows.Forms.Button btnStartRecieving;
         private System.Windows.Forms.Button btCancel;
         private AForge.Controls.VideoSourcePlayer videoSourcePlayer1;
+        private System.Windows.Forms.Label lblStatus;
 
     }
 }

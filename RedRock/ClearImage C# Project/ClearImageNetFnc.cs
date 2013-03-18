@@ -5,6 +5,7 @@ using Inlite.ClearImageNet;
 using System.Drawing;
 using System.IO;
 using System.Threading;
+using System.Drawing.Imaging;
 
 namespace Main
 {
@@ -305,12 +306,21 @@ namespace Main
 				// for faster reading specify only required direction
 				reader.Horizontal = true; reader.Vertical = true; reader.Diagonal = true;
 				// specify type
-				reader.QR = true;
-				Barcode[] barcodes = reader.Read (btPic); 
-				string s = "";  int cnt = 0;
-				foreach (Barcode bc in barcodes) 
-					{cnt++; AddBarcode(ref s, cnt, bc); } 
-				if (cnt == 0) 		{ s = "NO BARCODES"; 	} 
+                reader.QR = true;
+
+                string s = "";
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    btPic.Save(stream, ImageFormat.Bmp);
+                    stream.Position = 0;
+                    
+                    Barcode[] barcodes = reader.Read(stream);
+                     int cnt = 0;
+                    foreach (Barcode bc in barcodes)
+                    { cnt++; AddBarcode(ref s, cnt, bc); }
+                    if (cnt == 0) { s = "NO BARCODES"; }
+                }
 				return  s; 
 		}
 
