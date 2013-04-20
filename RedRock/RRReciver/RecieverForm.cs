@@ -68,8 +68,23 @@ namespace RedSender
 
            }
 
+        private void ResetMembers()
+        {
+            this.stop_executing = false;
+            this.m_status = string.Empty;
+            Hashtable htAllPictureParts = new Hashtable();
+            nLastPicture = -1;
+            nTotalLenght = 0;
+            sFileType = string.Empty;
+        }
+
         private void btnStartRecieving_Click(object sender, EventArgs e)
-        { /*
+        {
+            this.ResetMembers();
+            this.lblStatus.Text = "";
+            this.prgStatusBar.Value = 0;
+            this.prgStatusBar.Maximum = 100;
+            /*
             Thread backgroundThread =
                 new Thread(new ThreadStart(this.mDoAction.ProcessFiles));
             backgroundThread.Name = "BackgroundThread";
@@ -78,7 +93,7 @@ namespace RedSender
             backgroundThread.Start();
 
             MessageBox.Show("מבוצעת קליטה");*/
-
+            
             this.TakePicture();
             //this.ProcessFiles();
 
@@ -110,7 +125,7 @@ namespace RedSender
                 offset += array.Length;
             }
 
-            MessageBox.Show("פענוח בוצע!");
+            //MessageBox.Show("פענוח בוצע!");
             int nFileNum = Directory.GetFiles(Path.GetTempPath()).Length;
             string sCompressedFileName = Path.GetTempPath() + "\\" + nFileNum + "temp.txt";
             string SOutFile = Path.GetTempPath() + "\\" + nFileNum + this.sFileType;
@@ -125,24 +140,32 @@ namespace RedSender
 
         }
 
-        private string QRDecode(Bitmap image)
+        private List<string> QRDecode(Bitmap image)
         {
-            string sdecodedString = string.Empty;
-
             ClearImageNetFnc ciNetProc = new ClearImageNetFnc();
-            string s = ciNetProc.ReadQR_Page(image);
-		
-            if (s != "NO BARCODES")
+            string sFullString = ciNetProc.ReadQR_Page(image);
+            List<string> lsReturnString = null;
+            
+            while (sFullString.IndexOf("--------------") != -1)
             {
-                int nPerfixEnd = s.IndexOf("RAW BARCODE DATA:");
-                s = s.Remove(0, nPerfixEnd);
+                if (lsReturnString == null)
+                {
+                    lsReturnString = new List<string>();
+                }
 
-                int nLastPerfix = s.IndexOf(":");
-                s = s.Remove(0, nLastPerfix + 3);
-                s = s.Replace("--------------", String.Empty);
-            }
+                    string s = sFullString.Remove(sFullString.IndexOf("--------------") + "--------------".Length);
+                    sFullString = sFullString.Remove(0, sFullString.IndexOf("--------------") + "--------------".Length);
 
-            return s;
+                    int nPerfixEnd = s.IndexOf("RAW BARCODE DATA:");
+                    s = s.Remove(0, nPerfixEnd);
+
+                    int nLastPerfix = s.IndexOf(":");
+                    s = s.Remove(0, nLastPerfix + 3);
+                    s = s.Replace("--------------", String.Empty);
+                    lsReturnString.Add(s);
+                }
+
+            return lsReturnString;
         }
 
         private void TakePicture()
@@ -155,6 +178,8 @@ namespace RedSender
                 VideoCaptureDevice vd = new VideoCaptureDevice(fi.MonikerString);
                 //vd.DesiredFrameSize = new Size(600, 800);
                 
+                vd.DesiredFrameRate = 65;
+
                 this.videoSourcePlayer1.VideoSource = vd;
                 // set NewFrame event handler
                 this.videoSourcePlayer1.VideoSource.NewFrame += new NewFrameEventHandler(video_NewFrame);
@@ -164,15 +189,19 @@ namespace RedSender
                 break;
             }
         }
-
+        
         private void UpdateLabelStatus(int nCurrFrameNumber, int nLastFrameNumber)
         {
+            // Add one to the status bar
+            this.prgStatusBar.Visible = true;
+            this.prgStatusBar.Value++;
+
             this.m_status = "נקלטו: " + nCurrFrameNumber.ToString();
 
             if (nLastFrameNumber != -1)
             {
                 this.m_status += "מתוך: " + (nLastFrameNumber + 1).ToString();
-                
+                this.prgStatusBar.Maximum = nLastFrameNumber + 1;
 
                 foreach (int nCurrNum in htAllPictureParts.Keys)
                 {
@@ -194,7 +223,7 @@ namespace RedSender
 
         private void video_NewFrame(object sender, NewFrameEventArgs eventArgs)
         {
-            if (!this.stop_executing)
+             if (!this.stop_executing)
             {
                 // get new frame
                 Bitmap bitmap = eventArgs.Frame;
@@ -219,47 +248,50 @@ namespace RedSender
         private string ProcessImage(Bitmap image)
         {
             string sFileResultType = String.Empty;
-            string sDecodedPicture = this.QRDecode(image);
+            List<string> arrsDecodedPictures = this.QRDecode(image);
 
-            if (sDecodedPicture != "NO BARCODES")
+            if (arrsDecodedPictures != null)
             {
-                // Split the decoded string to the picture and picture index
-                int nSpace = sDecodedPicture.IndexOf(' ');
-                string sPicIndex = sDecodedPicture.Substring(0, nSpace);
-                string sPicture = sDecodedPicture.Remove(0, nSpace + 1);
-
-                // If it is the last file - it will have *GIF* ending
-                int nStarIndex = sPicIndex.IndexOf('*');
-
-                if (nStarIndex != -1)
+                foreach (string sDecodedPicture in arrsDecodedPictures)
                 {
-                    int nSecondStarIndex = sPicIndex.IndexOf('*', nStarIndex + 1);
-                    this.sFileType = sPicIndex.Substring(nStarIndex + 1, nSecondStarIndex - nStarIndex - 1);
-                    sPicIndex = sPicIndex.Substring(0, nStarIndex);
-                    nLastPicture = int.Parse(sPicIndex);
-                }
+                    // Split the decoded string to the picture and picture index
+                    int nSpace = sDecodedPicture.IndexOf(' ');
+                    string sPicIndex = sDecodedPicture.Substring(0, nSpace);
+                    string sPicture = sDecodedPicture.Remove(0, nSpace + 1);
 
-                int nPicIndex;
+                    // If it is the last file - it will have *GIF* ending
+                    int nStarIndex = sPicIndex.IndexOf('*');
 
-                try
-                {
-                    nPicIndex = int.Parse(sPicIndex);
-                }
-                catch (Exception E)
-                {
-                    throw new Exception("Picture format not valid");
-                }
+                    if (nStarIndex != -1)
+                    {
+                        int nSecondStarIndex = sPicIndex.IndexOf('*', nStarIndex + 1);
+                        this.sFileType = sPicIndex.Substring(nStarIndex + 1, nSecondStarIndex - nStarIndex - 1);
+                        sPicIndex = sPicIndex.Substring(0, nStarIndex);
+                        nLastPicture = int.Parse(sPicIndex);
+                    }
 
-                if (!htAllPictureParts.ContainsKey(nPicIndex))
-                {
-                    Byte[] btPic = Convert.FromBase64String(sPicture.Trim());
+                    int nPicIndex;
 
-                    htAllPictureParts.Add(nPicIndex, btPic);
+                    try
+                    {
+                        nPicIndex = int.Parse(sPicIndex);
+                    }
+                    catch (Exception E)
+                    {
+                        throw new Exception("Picture format not valid");
+                    }
 
-                    // Change the label
-                    this.Invoke(eveFrameAdded, htAllPictureParts.Count, nLastPicture);
+                    if (!htAllPictureParts.ContainsKey(nPicIndex))
+                    {
+                        Byte[] btPic = Convert.FromBase64String(sPicture.Trim());
 
-                    nTotalLenght = nTotalLenght + btPic.Length;
+                        htAllPictureParts.Add(nPicIndex, btPic);
+
+                        // Change the label
+                        this.Invoke(eveFrameAdded, htAllPictureParts.Count, nLastPicture);
+
+                        nTotalLenght = nTotalLenght + btPic.Length;
+                    }
                 }
             }
 

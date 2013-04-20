@@ -265,12 +265,13 @@ namespace RedRock
             //string filePath = "C:/temp/lotem.png";
             //string filePath = "C:/temp/file.txt";
             string filePath = txtFilePath.Text;
-            string qrFilePath = QRsender.FileToQRCode(filePath);
+            string qrFilePath = QRsender.FileToQRCode(filePath, this.chkComprassPhoto.Checked);
             string destination = row.Cells["ColMail"].Value.ToString();
 
             
             string userName = "Tomer Shohat";
             gmail.email_send(destination, userName, qrFilePath);
+            MessageBox.Show("ההודעה נשלחה בהצלחה");
             //Send a message with one line of code
             //GmailMessage.SendFromGmail("shoham.gilad", "diablo17", "shoham.gilad@gmail.com", "working", "message body");
 
@@ -297,6 +298,11 @@ namespace RedRock
             string fileName = openFileDialog1.FileName;
             txtFilePath.Text = fileName;
 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            (new RedSender.RedRock()).Show();
         }
     }
 }

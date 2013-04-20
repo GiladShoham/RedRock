@@ -54,14 +54,19 @@
             this.btnSendMail = new System.Windows.Forms.Button();
             this.btnFileUpload = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.button1 = new System.Windows.Forms.Button();
+            this.chkComprassPhoto = new System.Windows.Forms.CheckBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).BeginInit();
             this.bindingNavigator1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // dataGridView1
             // 
             this.dataGridView1.AllowUserToOrderColumns = true;
+            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ColID,
@@ -69,7 +74,7 @@
             this.ColPhone,
             this.ColMail,
             this.ColKey});
-            this.dataGridView1.Location = new System.Drawing.Point(26, 38);
+            this.dataGridView1.Location = new System.Drawing.Point(335, 38);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.dataGridView1.Size = new System.Drawing.Size(683, 150);
@@ -132,7 +137,7 @@
             this.bindingNavigator1.Name = "bindingNavigator1";
             this.bindingNavigator1.PositionItem = this.bindingNavigatorPositionItem;
             this.bindingNavigator1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.bindingNavigator1.Size = new System.Drawing.Size(730, 25);
+            this.bindingNavigator1.Size = new System.Drawing.Size(1031, 25);
             this.bindingNavigator1.TabIndex = 1;
             this.bindingNavigator1.Text = "bindingNavigator1";
             // 
@@ -244,16 +249,19 @@
             // 
             // txtFilePath
             // 
-            this.txtFilePath.Location = new System.Drawing.Point(358, 291);
+            this.txtFilePath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtFilePath.Location = new System.Drawing.Point(759, 197);
             this.txtFilePath.Name = "txtFilePath";
-            this.txtFilePath.Size = new System.Drawing.Size(270, 20);
+            this.txtFilePath.Size = new System.Drawing.Size(170, 20);
             this.txtFilePath.TabIndex = 2;
+            this.txtFilePath.Text = "D:\\Test\\New\\trol.gif";
             // 
             // btnSendMail
             // 
-            this.btnSendMail.Location = new System.Drawing.Point(26, 288);
+            this.btnSendMail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSendMail.Location = new System.Drawing.Point(335, 194);
             this.btnSendMail.Name = "btnSendMail";
-            this.btnSendMail.Size = new System.Drawing.Size(75, 23);
+            this.btnSendMail.Size = new System.Drawing.Size(107, 23);
             this.btnSendMail.TabIndex = 3;
             this.btnSendMail.Text = "שלח מייל";
             this.btnSendMail.UseVisualStyleBackColor = true;
@@ -261,7 +269,8 @@
             // 
             // btnFileUpload
             // 
-            this.btnFileUpload.Location = new System.Drawing.Point(634, 289);
+            this.btnFileUpload.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnFileUpload.Location = new System.Drawing.Point(944, 194);
             this.btnFileUpload.Name = "btnFileUpload";
             this.btnFileUpload.Size = new System.Drawing.Size(75, 23);
             this.btnFileUpload.TabIndex = 4;
@@ -273,23 +282,62 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
+            // button1
+            // 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button1.Location = new System.Drawing.Point(335, 224);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(107, 24);
+            this.button1.TabIndex = 5;
+            this.button1.Text = "עבור למפענח";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // chkComprassPhoto
+            // 
+            this.chkComprassPhoto.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkComprassPhoto.AutoSize = true;
+            this.chkComprassPhoto.Location = new System.Drawing.Point(859, 230);
+            this.chkComprassPhoto.Name = "chkComprassPhoto";
+            this.chkComprassPhoto.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.chkComprassPhoto.Size = new System.Drawing.Size(160, 17);
+            this.chkComprassPhoto.TabIndex = 6;
+            this.chkComprassPhoto.Text = "דחוס קבצים לפני השליחה";
+            this.chkComprassPhoto.UseVisualStyleBackColor = true;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::RedRock.Properties.Resources.redrock__1_;
+            this.pictureBox1.Location = new System.Drawing.Point(13, 13);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(316, 235);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 7;
+            this.pictureBox1.TabStop = false;
+            // 
             // MangeUsers
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(730, 428);
+            this.ClientSize = new System.Drawing.Size(1031, 259);
+            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.chkComprassPhoto);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.btnFileUpload);
             this.Controls.Add(this.btnSendMail);
             this.Controls.Add(this.txtFilePath);
             this.Controls.Add(this.bindingNavigator1);
             this.Controls.Add(this.dataGridView1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MangeUsers";
-            this.Text = "MangeUsers";
+            this.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.Text = "ניהול משתמשים";
             this.Load += new System.EventHandler(this.MangeUsers_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingNavigator1)).EndInit();
             this.bindingNavigator1.ResumeLayout(false);
             this.bindingNavigator1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -321,5 +369,8 @@
         private System.Windows.Forms.Button btnSendMail;
         private System.Windows.Forms.Button btnFileUpload;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.CheckBox chkComprassPhoto;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }

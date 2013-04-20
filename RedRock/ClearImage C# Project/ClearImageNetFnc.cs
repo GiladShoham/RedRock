@@ -319,7 +319,10 @@ namespace Main
                      int cnt = 0;
                     foreach (Barcode bc in barcodes)
                     { cnt++; AddBarcode(ref s, cnt, bc); }
-                    if (cnt == 0) { s = "NO BARCODES"; }
+                    if (cnt == 0) 
+                    { 
+                        s = "NO BARCODES"; 
+                    }
                 }
 				return  s; 
 		}

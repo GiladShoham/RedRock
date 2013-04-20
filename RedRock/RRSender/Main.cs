@@ -26,10 +26,14 @@ namespace RRReciver
         #region Data Members
 
         // Const Members
-        public const int BYTES_IN_FRAME        = 280;
+        public const int BYTES_IN_FRAME        = 100;
         public const int NUM_OF_SEQUENCE_DIGIT = 8;
-        public const int QR_HIGHET             = 61;
-        public const int QR_WIDTH              = 61;
+        public const int QR_HIGHET             = 0;
+        public const int QR_WIDTH              = 0;
+        public const int QR_IN_FRAME           = 2;
+        public const int FRAME_RATE            = 8;
+
+        
         
         
         // Data Member
@@ -37,6 +41,8 @@ namespace RRReciver
         private string OUTPUT_FOLDER_TXT;
         private string OUTPUT_FOLDER_GIF;
         private string OUTPUT_FOLDER_BASE;
+        private string OUTPUT_FOLDER_COMPRASS;
+
         private string m_strCurrFileLocation = string.Empty;
         private string m_strFileName         = string.Empty;
         private int    m_nCurrTestNum        = 0;
@@ -52,6 +58,8 @@ namespace RRReciver
         public Main()
         {
             InitializeComponent();
+
+            this.CreateFolders();
         }
 
         #endregion
@@ -60,20 +68,22 @@ namespace RRReciver
 
         private void CreateFolders()
         {
-            string strTestCounter = (Directory.GetDirectories(OUTPUT_FOLDER_BASE).Length + 1) + @"\";
+            OUTPUT_FOLDER_BASE = Path.GetTempPath();
 
-            Directory.CreateDirectory(OUTPUT_FOLDER_BASE + strTestCounter);
-            
-            File.Copy(m_strCurrFileLocation, OUTPUT_FOLDER_BASE + strTestCounter + Path.GetFileName(m_strCurrFileLocation));
-            m_strCurrFileLocation = OUTPUT_FOLDER_BASE + strTestCounter + Path.GetFileName(m_strCurrFileLocation);
+            this.m_nCurrTestNum = (Directory.GetDirectories(OUTPUT_FOLDER_BASE).Length + 1);
+            string strTestCounter = this.m_nCurrTestNum + @"\";
 
             OUTPUT_FOLDER_BMPS = OUTPUT_FOLDER_BASE + strTestCounter + "BMP\\";
             OUTPUT_FOLDER_TXT = OUTPUT_FOLDER_BASE + strTestCounter + "TXT\\";
             OUTPUT_FOLDER_GIF = OUTPUT_FOLDER_BASE + strTestCounter + "GIF\\";
+            OUTPUT_FOLDER_COMPRASS = OUTPUT_FOLDER_BASE + strTestCounter + "COMPRASS\\";
 
+            Directory.CreateDirectory(OUTPUT_FOLDER_BASE + strTestCounter);
+            
             Directory.CreateDirectory(OUTPUT_FOLDER_BMPS);
             Directory.CreateDirectory(OUTPUT_FOLDER_GIF);
             Directory.CreateDirectory(OUTPUT_FOLDER_TXT);
+            Directory.CreateDirectory(OUTPUT_FOLDER_COMPRASS);
         }
 
         private void btnCreateCode_Click(object sender, EventArgs e)
@@ -87,16 +97,63 @@ namespace RRReciver
         /// </summary>
         /// <param name="OriginalFile"></param>
         /// <returns></returns>
+        public string FileToQRCode(string OriginalFile, bool bComprassImage)
+        {
+            string strOrginName = OriginalFile;
+            if (bComprassImage)
+            {
+                string strExtension = Path.GetExtension(OriginalFile).ToUpper().Substring(1,3);
+                // Check the file type
+                if ((strExtension == "DOC") || (strExtension == "DOCX"))
+                {
+                    string strTempPathWithFile = OUTPUT_FOLDER_COMPRASS + "\\" + Path.GetFileName(strOrginName);
+                    File.Move(strOrginName, strTempPathWithFile);
+                    strOrginName = DocToRTF.ConvertDOCtoRTF(strTempPathWithFile);
+                }
+                else if ((strExtension == "PNG") || (strExtension == "JPG") || (strExtension == "BMP") || (strExtension == "GIF") || (strExtension == "TIF"))
+                {
+
+                    Bitmap btBitmap = new Bitmap(OriginalFile);
+                    int nNewWidth = 100;
+                    int nNewHeight = 200;
+
+                    float fProprtion = btBitmap.Width / nNewWidth;
+                    if (btBitmap.Height > nNewWidth * 2)
+                    {
+                        fProprtion = btBitmap.Height / nNewHeight;
+                        nNewWidth = int.Parse(Math.Round((float)btBitmap.Width / fProprtion).ToString());
+                    }
+                    else
+                    {
+                        nNewHeight = int.Parse(Math.Round((float)btBitmap.Height / fProprtion).ToString());
+                    }
+
+                    string strNewFile = CreateComprassFile(btBitmap, new Size(nNewWidth, nNewHeight));
+
+                    // Rename the file
+                    strOrginName = OUTPUT_FOLDER_COMPRASS + Path.GetFileNameWithoutExtension(OriginalFile) + Path.GetExtension(strNewFile);
+                    File.Move(strNewFile, strOrginName);
+                }
+            }
+
+            return (this.FileToQRCode(strOrginName));
+        }
+
+        /// <summary>
+        /// The method get a file, comprass it, change it to binary and decode it to qrcode image
+        /// </summary>
+        /// <param name="OriginalFile"></param>
+        /// <returns></returns>
         public string FileToQRCode(string OriginalFile)
         {
-            OUTPUT_FOLDER_BASE = Path.GetTempPath();
-
             // Set the curr file details to the data members
             m_strCurrFileLocation = OriginalFile;
             m_strFileName = Path.GetFileName(m_strCurrFileLocation);
 
-            // Create Folders
-            CreateFolders();
+            // Create file
+            File.Copy(m_strCurrFileLocation, OUTPUT_FOLDER_BASE + this.m_nCurrTestNum + "\\" + Path.GetFileName(m_strCurrFileLocation));
+            m_strCurrFileLocation = OUTPUT_FOLDER_BASE + this.m_nCurrTestNum + "\\" + Path.GetFileName(m_strCurrFileLocation);
+
 
             // Comprass the file
             string strZipFile = this.Comprass(m_strCurrFileLocation);
@@ -110,6 +167,8 @@ namespace RRReciver
             // Creaate QR code of each frame
             QRCodeWriter qcCode = new QRCodeWriter();
             string strLastStringAddon = string.Empty;
+            List<ByteMatrix> lsByteMatrix = new List<ByteMatrix>();
+
             for (int nCurrFrameNumber = 0; nCurrFrameNumber < NumOfFrame; nCurrFrameNumber++)
             {
                 byte[] btOneFrame = null;
@@ -136,6 +195,25 @@ namespace RRReciver
                 strOneFrame = strOneFrame.PadRight(output_size, ' ');
                 ByteMatrix btMatrix = qcCode.encode(strOneFrame, BarcodeFormat.QR_CODE, QR_WIDTH, QR_HIGHET);
 
+                lsByteMatrix.Add(btMatrix);
+
+            }
+
+            CreateBitmapFile(lsByteMatrix);
+
+            // Create animited gif from bitmap
+            string strGIFFileName = this.CreateAnimitedGif();
+
+            return (strGIFFileName);
+        }
+
+        private void CreateBitmapFile(List<ByteMatrix> lsByteMatrix)
+        {
+            List<Bitmap> lsBitmap = new List<Bitmap>();
+
+            for (int nCurrBMPNumber = 0; nCurrBMPNumber < lsByteMatrix.Count; nCurrBMPNumber++) 
+            {
+                ByteMatrix btMatrix = lsByteMatrix[nCurrBMPNumber];
                 // Create an Encoder object based on the GUID 
                 // for the Quality parameter category.
                 System.Drawing.Imaging.Encoder myEncoder =
@@ -150,18 +228,139 @@ namespace RRReciver
                 EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 100L);
                 myEncoderParameters.Param[0] = myEncoderParameter;
 
-                btMatrix.ToBitmap().Save(OUTPUT_FOLDER_BMPS + nCurrFrameNumber + ".jpg", GetEncoder(ImageFormat.Jpeg), myEncoderParameters);
+                // Save the bitmap in the array for saving to compla
+                lsBitmap.Add(btMatrix.ToBitmap());
 
-                // Add text file for debug
-                File.WriteAllText(OUTPUT_FOLDER_TXT + nCurrFrameNumber + ".txt", strOneFrame);
+                // 
+                if ((lsBitmap.Count == QR_IN_FRAME) || (nCurrBMPNumber + 1 == lsByteMatrix.Count))
+                {
+                    Bitmap bmpFinall = null;
+                    if (lsBitmap.Count == 6)
+                    {
+                        int nWidth = Math.Max((Math.Max(lsBitmap[0].Width + lsBitmap[1].Width, lsBitmap[2].Width + lsBitmap[3].Width)),lsBitmap[4].Width + lsBitmap[5].Width);
+                        int nHeight = Math.Max(lsBitmap[0].Height + lsBitmap[2].Height + lsBitmap[4].Height, lsBitmap[1].Height + lsBitmap[3].Height + lsBitmap[5].Height);
+                        bmpFinall = new Bitmap(nWidth, nHeight);
 
+
+                        Graphics g = Graphics.FromImage(bmpFinall);
+                        g.DrawImage(lsBitmap[0], 0, 0);
+                        g.DrawImage(lsBitmap[1], lsBitmap[0].Width, 0);
+                        g.DrawImage(lsBitmap[2], 0, lsBitmap[0].Height);
+                        g.DrawImage(lsBitmap[3], lsBitmap[0].Width, lsBitmap[0].Height);
+                        g.DrawImage(lsBitmap[4], 0, lsBitmap[0].Height + lsBitmap[2].Height);
+                        g.DrawImage(lsBitmap[5], lsBitmap[0].Width, lsBitmap[1].Height + lsBitmap[3].Height);
+                    }
+                    if (lsBitmap.Count == 5)
+                    {
+                        int nWidth = Math.Max((Math.Max(lsBitmap[0].Width + lsBitmap[1].Width, lsBitmap[2].Width + lsBitmap[3].Width)), lsBitmap[4].Width);
+                        int nHeight = Math.Max(lsBitmap[0].Height + lsBitmap[2].Height + lsBitmap[4].Height, lsBitmap[1].Height + lsBitmap[3].Height);
+                        bmpFinall = new Bitmap(nWidth, nHeight);
+
+                        Graphics g = Graphics.FromImage(bmpFinall);
+                        g.DrawImage(lsBitmap[0], 0, 0);
+                        g.DrawImage(lsBitmap[1], lsBitmap[0].Width, 0);
+                        g.DrawImage(lsBitmap[2], 0, lsBitmap[0].Height);
+                        g.DrawImage(lsBitmap[3], lsBitmap[0].Width, lsBitmap[0].Height);
+                        g.DrawImage(lsBitmap[4], 0, lsBitmap[0].Height + lsBitmap[2].Height);
+                    }
+                    if (lsBitmap.Count == 4)
+                    {
+                        int nWidth = Math.Max(lsBitmap[0].Width + lsBitmap[1].Width, lsBitmap[2].Width + lsBitmap[3].Width);
+                        int nHeight = Math.Max(lsBitmap[0].Height + lsBitmap[2].Height, lsBitmap[1].Height + lsBitmap[3].Height);
+                        bmpFinall = new Bitmap(nWidth, nHeight);
+
+
+                        Graphics g = Graphics.FromImage(bmpFinall);
+                        g.DrawImage(lsBitmap[0], 0, 0);
+                        g.DrawImage(lsBitmap[1], lsBitmap[0].Width, 0);
+                        g.DrawImage(lsBitmap[2], 0, lsBitmap[0].Height);
+                        g.DrawImage(lsBitmap[3], lsBitmap[0].Width, lsBitmap[0].Height);
+                    }
+                    if (lsBitmap.Count == 3)
+                    {
+                        int nWidth = Math.Max(Math.Max(lsBitmap[0].Width, lsBitmap[2].Width), lsBitmap[1].Width);
+                        int nHeight = lsBitmap[0].Height + lsBitmap[1].Height + lsBitmap[2].Height;
+                        bmpFinall = new Bitmap(nWidth, nHeight);
+
+                        Graphics g = Graphics.FromImage(bmpFinall);
+                        g.DrawImage(lsBitmap[0], 0, 0);
+                        g.DrawImage(lsBitmap[1], 0, lsBitmap[0].Height);
+                        g.DrawImage(lsBitmap[2], 0, lsBitmap[0].Height + lsBitmap[1].Height);
+                    }
+                    if (lsBitmap.Count == 2)
+                    {
+                        int nWidth = Math.Max(lsBitmap[0].Width, lsBitmap[1].Width);
+                        int nHeight = lsBitmap[0].Height + lsBitmap[1].Height;
+                        bmpFinall = new Bitmap(nWidth, nHeight);
+
+                        Graphics g = Graphics.FromImage(bmpFinall);
+                        g.DrawImage(lsBitmap[0], 0, 0);
+                        g.DrawImage(lsBitmap[1], 0, lsBitmap[0].Height);
+                    }
+                    else if (lsBitmap.Count == 1)
+                    {
+                        bmpFinall = lsBitmap[0];
+                    }
+
+                    bmpFinall.Save(OUTPUT_FOLDER_BMPS + nCurrBMPNumber + ".jpg", GetEncoder(ImageFormat.Jpeg), myEncoderParameters);
+
+
+                    lsBitmap.Clear();
+                }
+            }
+        }
+
+        private string CreateComprassFile(Bitmap btmBitmap, Size szSize)
+        {
+                // Create an Encoder object based on the GUID 
+                // for the Quality parameter category.
+                System.Drawing.Imaging.Encoder myEncoder =
+                    System.Drawing.Imaging.Encoder.Quality;
+
+                // Create an EncoderParameters object. 
+                // An EncoderParameters object has an array of EncoderParameter 
+                // objects. In this case, there is only one 
+                // EncoderParameter object in the array.
+                EncoderParameters myEncoderParameters = new EncoderParameters(1);
+
+                EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 30L);
+                myEncoderParameters.Param[0] = myEncoderParameter;
+
+                btmBitmap = this.ResizeBitmap(btmBitmap, szSize.Width, szSize.Height);
+
+                btmBitmap.Save(OUTPUT_FOLDER_COMPRASS + "Comprassed" + ".jpg", GetEncoder(ImageFormat.Jpeg), myEncoderParameters);
+                btmBitmap.Save(OUTPUT_FOLDER_COMPRASS + "Comprassed" + ".gif", GetEncoder(ImageFormat.Gif), myEncoderParameters);
+                btmBitmap.Save(OUTPUT_FOLDER_COMPRASS + "Comprassed" + ".tif", GetEncoder(ImageFormat.Tiff), myEncoderParameters);
+                string strReturnValue = FindSmallestFile(OUTPUT_FOLDER_COMPRASS + "Comprassed" + ".jpg", OUTPUT_FOLDER_COMPRASS + "Comprassed" + ".gif", OUTPUT_FOLDER_COMPRASS + "Comprassed" + ".tif");
+                return (strReturnValue);
+                
+        }
+
+        private string FindSmallestFile(params string[] FileList)
+        {
+            long nSmallest = (new FileInfo(FileList[0]).Length);
+            string strSmallesFileName = FileList[0];
+
+            for (int i = 0; i < FileList.Length; i++)
+            {
+                long nCurrFile = (new FileInfo(FileList[i]).Length);
+                if (nCurrFile < nSmallest)
+                {
+                    nSmallest = nCurrFile;
+                    strSmallesFileName = FileList[i];
+                }
             }
 
-            // Create animited gif from bitmap
-            string strGIFFileName = this.CreateAnimitedGif();
-
-            return (strGIFFileName);
+            return (strSmallesFileName);
         }
+
+        private Bitmap ResizeBitmap(Bitmap sourceBMP, int width, int height )
+        {
+            Bitmap result = new Bitmap(width, height);
+            using (Graphics g = Graphics.FromImage(result))
+                g.DrawImage(sourceBMP, 0, 0, width, height);
+            return result;
+         }
 
         private ImageCodecInfo GetEncoder(ImageFormat format)
         {
@@ -189,11 +388,6 @@ namespace RRReciver
 
         private string CreateAnimitedGif()
         {
-
-
-
-
-
             /* create Gif */
             // you should replace filepath
             
@@ -242,7 +436,7 @@ namespace RRReciver
 
         public void WriteGifImg(byte[] B, BinaryWriter BW)
         {
-            byte[] Delay = { 30, 0 };
+            byte[] Delay = { 100 / FRAME_RATE, 0 };
 
             B[785] = Delay[0]; //5 secs delay
             B[786] = Delay[1];
